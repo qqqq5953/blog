@@ -3,9 +3,33 @@ var router = express.Router()
 const firebaseAdminDb = require('../connection/firebase_admin')
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
+const articlesRef = firebaseAdminDb.ref('/articles/')
 
-router.get('/article', function (req, res, next) {
-  res.render('dashboard/article', { title: 'Express' })
+router.get('/article/create', function (req, res, next) {
+  categoriesRef.once('value').then((snapshot) => {
+    const categories = snapshot.val()
+    res.render('dashboard/article', {
+      title: 'Express',
+      categories,
+      article: {}
+    })
+  })
+})
+
+router.get('/article/:id', function (req, res, next) {
+  const id = req.params.id
+  let categories = {}
+
+  categoriesRef
+    .once('value')
+    .then((snapshot) => {
+      categories = snapshot.val()
+      return articlesRef.child(id).once('value')
+    })
+    .then((snapshot) => {
+      const article = snapshot.val()
+      res.render('dashboard/article', { title: 'Express', categories, article })
+    })
 })
 
 router.get('/archives', function (req, res, next) {
@@ -23,6 +47,21 @@ router.get('/categories', function (req, res, next) {
       alertMessages
     })
   })
+})
+
+// articles
+router.post('/article/create', (req, res) => {
+  const data = req.body
+  const articleRef = articlesRef.push()
+  const key = articleRef.key
+  const updateTime = Math.floor(Date.now() / 1000)
+
+  data.id = key
+  data.updateTime = updateTime
+  articleRef.set(data)
+  res.redirect(`/dashboard/article/${key}`)
+
+  console.log(data)
 })
 
 router.post('/categories/create', (req, res) => {
