@@ -17,6 +17,7 @@ router.get('/article/create', function (req, res, next) {
 })
 
 router.get('/article/:id', function (req, res, next) {
+  console.log('here')
   const id = req.params.id
   let categories = {}
 
@@ -64,6 +65,19 @@ router.post('/article/create', (req, res) => {
   console.log(data)
 })
 
+router.post('/article/update/:id', function (req, res, next) {
+  const id = req.params.id
+  const data = req.body
+
+  articlesRef
+    .child(id)
+    .update(data)
+    .then(() => {
+      res.redirect(`/dashboard/article/${id}`)
+    })
+})
+
+// category
 router.post('/categories/create', (req, res) => {
   const data = req.body
   const categoryRef = categoriesRef.push()

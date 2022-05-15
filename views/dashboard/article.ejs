@@ -1,10 +1,14 @@
 <% extend('../layouts/dashboard-layout')%> 
-<%# if(article===undefined){var
+<% if(article===undefined){var
 article={}} %>
 
 <form
   method="POST"
-  action="/dashboard/article/create"
+  <% if(article.id){ %>
+    action="/dashboard/article/update/<%=article.id%>"
+  <%} else{ %>
+    action="/dashboard/article/create"
+  <%}%> 
   class="row justify-content-center"
 >
   <div class="col-md-6">
