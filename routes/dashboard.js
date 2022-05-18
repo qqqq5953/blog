@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router()
 const firebaseAdminDb = require('../connection/firebase_admin')
+const striptags = require('striptags')
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
@@ -34,7 +35,62 @@ router.get('/article/:id', function (req, res, next) {
 })
 
 router.get('/archives', function (req, res, next) {
-  res.render('dashboard/archives', { title: 'Express' })
+  let categories = {}
+  const articles = []
+  const status = req.query.status || 'public'
+  console.log('status', status)
+
+  const getCategories = async () => {
+    const snapshot = await categoriesRef.once('value')
+    categories = snapshot.val()
+  }
+
+  const getArticlesByUpdateTime = async () => {
+    const snapshot = await articlesRef.orderByChild('updateTime').once('value')
+    snapshot.forEach((childSnapshot) => {
+      // 決定是草稿還是公開文章
+      if (status === childSnapshot.val().status) {
+        articles.push(childSnapshot.val())
+      }
+    })
+    articles.reverse()
+  }
+
+  const renderData = async () => {
+    await getCategories()
+    await getArticlesByUpdateTime()
+    res.render('dashboard/archives', {
+      title: 'Express',
+      categories,
+      articles,
+      striptags,
+      status
+    })
+  }
+
+  renderData()
+
+  // categoriesRef
+  //   .once('value')
+  //   .then((snapshot) => {
+  //     categories = snapshot.val()
+  //     return articlesRef.orderByChild('updateTime').once('value')
+  //   })
+  //   .then((snapshot) => {
+  //     const articles = []
+  //     snapshot.forEach((childSnapshot) => {
+  //       articles.push(childSnapshot.val())
+  //     })
+  //     // Object.values(snapshot.val()).forEach((item) => {
+  //     //   articles.push(item)
+  //     // })
+  //     articles.reverse()
+  //     res.render('dashboard/archives', {
+  //       title: 'Express',
+  //       categories,
+  //       articles
+  //     })
+  //   })
 })
 
 router.get('/categories', function (req, res, next) {
@@ -55,10 +111,17 @@ router.post('/article/create', (req, res) => {
   const data = req.body
   const articleRef = articlesRef.push()
   const key = articleRef.key
-  const updateTime = Math.floor(Date.now() / 1000)
+  // const updateTime = Math.floor(Date.now() / 1000)
+  const updateTime = () => {
+    const today = new Date()
+    const dd = String(today.getDate()).padStart(2, '0')
+    const mm = String(today.getMonth() + 1).padStart(2, '0')
+    const yyyy = today.getFullYear()
+    return yyyy + '-' + mm + '-' + dd
+  }
 
   data.id = key
-  data.updateTime = updateTime
+  data.updateTime = updateTime()
   articleRef.set(data)
   res.redirect(`/dashboard/article/${key}`)
 
@@ -75,6 +138,14 @@ router.post('/article/update/:id', function (req, res, next) {
     .then(() => {
       res.redirect(`/dashboard/article/${id}`)
     })
+})
+
+router.post('/article/delete/:id', (req, res) => {
+  const id = req.params.id
+  articlesRef.child(id).remove()
+
+  res.send('文章已刪除')
+  res.end()
 })
 
 // category
@@ -104,7 +175,7 @@ router.post('/categories/create', (req, res) => {
 })
 
 router.post('/categories/delete/:id', (req, res) => {
-  const id = req.params.id.substring(1)
+  const id = req.params.id
   categoriesRef.child(id).remove()
 
   req.flash('info', '欄位刪除成功')
