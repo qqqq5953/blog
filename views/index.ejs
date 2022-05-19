@@ -3,25 +3,6 @@
 <div class="container">
   <div class="row my-4 justify-content-center">
     <div class="col-md-9">
-      <nav class="my-5" aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled">
-            <a class="page-link" href="/?page=0" tabindex="-1">Previous</a>
-          </li>
-
-          <li class="page-item active">
-            <a class="page-link" href="/?page=1"> 1 </a>
-          </li>
-
-          <li class="page-item">
-            <a class="page-link" href="/?page=2"> 2 </a>
-          </li>
-
-          <li class="page-item">
-            <a class="page-link" href="/?page=2">Next</a>
-          </li>
-        </ul>
-      </nav>
       <% for(let prop in articles){ %>
       <div class="card mb-3">
         <div class="card-body">
@@ -45,7 +26,7 @@
           </div>
         </div>
       </div>
-      <% } %>
+      <% } %> <%- include("./partials/pagination") %>
     </div>
   </div>
 </div>
