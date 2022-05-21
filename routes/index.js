@@ -82,8 +82,4 @@ router.get('/post/:id', function (req, res, next) {
   renderData()
 })
 
-router.get('/dashboard/signup', function (req, res, next) {
-  res.render('dashboard/signup', { title: 'Express' })
-})
-
 module.exports = router

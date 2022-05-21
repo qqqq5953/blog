@@ -5,9 +5,11 @@ var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 const flash = require('connect-flash')
 const session = require('express-session')
+require('dotenv').config()
 
 var indexRouter = require('./routes/index')
 var dashboard = require('./routes/dashboard')
+const auth = require('./routes/auth')
 
 var app = express()
 
@@ -27,13 +29,26 @@ app.use(
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 100 * 1000 }
+    cookie: { maxAge: 1000 * 1000 }
   })
 )
 app.use(flash())
 
+// 之後要做到每個人登入有自己的資料
+const authCheck = (req, res, next) => {
+  const uid = req.session.uid
+
+  if (uid === process.env.FIREBASE_USER_UID) return next()
+  if (uid && uid !== process.env.FIREBASE_USER_UID)
+    req.flash('emailError', '非此 app 用戶')
+
+  res.redirect('/auth/login')
+}
+
+// routes
 app.use('/', indexRouter)
-app.use('/dashboard', dashboard)
+app.use('/dashboard', authCheck, dashboard)
+app.use('/auth', auth)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

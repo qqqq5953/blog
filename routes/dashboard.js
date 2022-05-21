@@ -5,6 +5,24 @@ const striptags = require('striptags')
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
+const usersRef = firebaseAdminDb.ref('/users/')
+
+router.get('/:uid', (req, res, next) => {
+  const uid = req.params.uid
+  console.log('session', req.session)
+
+  usersRef
+    .child(uid)
+    .once('value')
+    .then((snapshot) => {
+      const userName = snapshot.val().userName
+
+      res.render('dashboard/index', {
+        title: 'Express',
+        userName
+      })
+    })
+})
 
 router.get('/article/create', function (req, res, next) {
   categoriesRef.once('value').then((snapshot) => {
