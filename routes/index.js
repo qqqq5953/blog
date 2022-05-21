@@ -68,9 +68,23 @@ router.get('/post/:id', function (req, res, next) {
     article = snapshot.val()
   }
 
+  const checkArticleExists = (article) => {
+    if (!article) {
+      res.render('error', { errorMessage: 'The article does not exist' })
+      return
+    }
+  }
+
   const renderData = async () => {
     await getCategory()
     await getArticle()
+
+    // check if article exists
+    if (!article) {
+      res.render('error', { errorMessage: 'The article does not exist' })
+      return
+    }
+
     res.render('post', {
       title: 'Express',
       categories,
