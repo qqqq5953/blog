@@ -19,7 +19,7 @@ const sendErrorMessage = (req, error, errorCodeContent) => {
 
 // routers
 router.get('/signup', (req, res, next) => {
-  res.render('dashboard/signup', {
+  res.render('signup', {
     title: 'Express',
     emailError: req.flash('emailError'),
     passwordError: req.flash('passwordError'),
@@ -62,7 +62,7 @@ router.post('/signup', (req, res, next) => {
 })
 
 router.get('/login', function (req, res, next) {
-  res.render('dashboard/login', {
+  res.render('login', {
     title: 'Express',
     emailError: req.flash('emailError'),
     passwordError: req.flash('passwordError')
@@ -80,8 +80,10 @@ router.post('/login', function (req, res, next) {
       // login success
       const user = userCredential.user
       req.session.uid = user.uid
-      req.session.email = user.email
-      res.redirect(`/dashboard/${user.uid}`)
+      // req.session.email = user.email
+
+      res.redirect('/dashboard')
+      // res.redirect(`/dashboard/${user.uid}`)
     })
     .catch((error) => {
       const errorCodeContent = 'auth/wrong-password'

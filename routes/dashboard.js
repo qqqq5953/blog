@@ -1,34 +1,35 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 const firebaseAdminDb = require('../connection/firebase_admin')
 const striptags = require('striptags')
+let userName = ''
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
 const usersRef = firebaseAdminDb.ref('/users/')
 
-router.get('/:uid', (req, res, next) => {
-  const uid = req.params.uid
-  console.log('session', req.session)
+router.get('/', (req, res, next) => {
+  const getUserName = async () => {
+    const uid = req.session.uid
+    const snapshot = await usersRef.child(uid).once('value')
+    userName = snapshot.val().userName
+  }
 
-  usersRef
-    .child(uid)
-    .once('value')
-    .then((snapshot) => {
-      const userName = snapshot.val().userName
-
-      res.render('dashboard/index', {
-        title: 'Express',
-        userName
-      })
+  const renderData = async () => {
+    await getUserName()
+    res.render('dashboard/index', {
+      userName
     })
+  }
+
+  renderData()
 })
 
 router.get('/article/create', function (req, res, next) {
   categoriesRef.once('value').then((snapshot) => {
     const categories = snapshot.val()
     res.render('dashboard/article', {
-      title: 'Express',
+      userName,
       categories,
       article: {}
     })
@@ -48,7 +49,7 @@ router.get('/article/:id', function (req, res, next) {
     })
     .then((snapshot) => {
       const article = snapshot.val()
-      res.render('dashboard/article', { title: 'Express', categories, article })
+      res.render('dashboard/article', { userName, categories, article })
     })
 })
 
@@ -56,7 +57,6 @@ router.get('/archives', function (req, res, next) {
   let categories = {}
   const articles = []
   const status = req.query.status || 'public'
-  console.log('status', status)
 
   const getCategories = async () => {
     const snapshot = await categoriesRef.once('value')
@@ -78,7 +78,7 @@ router.get('/archives', function (req, res, next) {
     await getCategories()
     await getArticlesByUpdateTime()
     res.render('dashboard/archives', {
-      title: 'Express',
+      userName,
       categories,
       articles,
       striptags,
@@ -117,7 +117,7 @@ router.get('/categories', function (req, res, next) {
     const alertMessages = req.flash('info')
 
     res.render('dashboard/categories', {
-      title: 'Express',
+      userName,
       categories,
       alertMessages
     })

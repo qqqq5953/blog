@@ -1,32 +1,28 @@
 <% extend('./layouts/layout')%>
 
-<div class="container">
-  <div class="row my-4 justify-content-center">
-    <div class="col-md-9">
-      <% for(let prop in articles){ %>
-      <div class="card mb-3">
-        <div class="card-body">
-          <a href="/post/<%- articles[prop].id %>">
-            <h2 class="text-primary"><%- articles[prop].title %></h2></a
-          >
-          <div class="d-flex flex-row text-secondary small">
-            <div class="p-2">
-              <span class="fa fa-clock-o"></span>
-              <%- articles[prop].updateTime %>
-            </div>
-            <div class="p-2">
-              <i class="fa fa-tag" aria-hidden="true"></i>
-              <a href="#" class="text-info">
-                <%= categories[articles[prop].category].name %>
-              </a>
-            </div>
+<div class="row my-4 justify-content-center">
+  <div class="col-md-9">
+    <% for(let prop in articles){ %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <a href="/post/<%- articles[prop].id %>">
+          <h2 class="text-primary"><%- articles[prop].title %></h2></a
+        >
+        <div class="d-flex flex-row text-secondary small">
+          <div class="p-2">
+            <span class="fa fa-clock-o"></span>
+            <%- articles[prop].updateTime %>
           </div>
-          <div>
-            <%- striptags(articles[prop].content).substring(0,150) %> ...
+          <div class="p-2">
+            <i class="fa fa-tag" aria-hidden="true"></i>
+            <a href="#" class="text-info">
+              <%= categories[articles[prop].category].name %>
+            </a>
           </div>
         </div>
+        <div><%- striptags(articles[prop].content).substring(0,150) %> ...</div>
       </div>
-      <% } %> <%- include("./partials/pagination") %>
     </div>
+    <% } %> <%- include("./partials/pagination") %>
   </div>
 </div>

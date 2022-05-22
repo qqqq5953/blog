@@ -1,5 +1,5 @@
-var express = require('express')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 const firebaseAdminDb = require('../connection/firebase_admin')
 const striptags = require('striptags')
 const pagination = require('../modules/pagination')
@@ -9,6 +9,8 @@ const articlesRef = firebaseAdminDb.ref('/articles/')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+  req.session.destroy()
+
   let categories = {}
   let articlesArray = []
   let pageObject = {}
@@ -66,13 +68,6 @@ router.get('/post/:id', function (req, res, next) {
   const getArticle = async () => {
     const snapshot = await articlesRef.child(id).once('value')
     article = snapshot.val()
-  }
-
-  const checkArticleExists = (article) => {
-    if (!article) {
-      res.render('error', { errorMessage: 'The article does not exist' })
-      return
-    }
   }
 
   const renderData = async () => {
