@@ -1,0 +1,25 @@
+<% extend('../layouts/dashboard-layout',{userName})%>
+
+<div class="hex-blog">
+  <div class="row justify-content-center">
+    <div class="col-md-9">
+      <!-- artical header -->
+      <h1 class="text-primary"><%- article.title %></h1>
+      <div class="d-flex flex-row text-secondary small">
+        <div class="p-2">
+          <i class="fa fa-user-o" aria-hidden="true"></i> 卡斯伯
+        </div>
+        <div class="p-2"><%- article.updateTime %></div>
+        <div class="p-2">
+          <i class="fa fa-tag" aria-hidden="true"></i>
+          <span class="text-info">
+            <%= categories[article.category].name %>
+          </span>
+        </div>
+      </div>
+      <article class="text-dark post mb-4">
+        <p><%- article.content %></p>
+      </article>
+    </div>
+  </div>
+</div>

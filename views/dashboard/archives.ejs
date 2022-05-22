@@ -37,10 +37,9 @@
           data-title="<%= articles[prop].title %>"
           >刪除</a
         >
-        <a href="#" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
-
+        <a href="/dashboard/article/<%= articles[prop].id %>" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
         <a
-          href="#"
+          href="/dashboard/article/preview/<%= articles[prop].id %>"
           target="_blank"
           class="btn btn-outline-secondary w-100 rounded-0"
           >預覽</a
@@ -54,10 +53,11 @@
 
 <script>
   const deletePosts = document.querySelectorAll(".deletePost")
+
   deletePosts.forEach(deletePost => {
     deletePost.addEventListener("click", e => {
       e.preventDefault()
-      console.log(e.target.dataset.id)
+
       const id = e.target.dataset.id
       const url = `/dashboard/article/delete/${id}`
       const options = {
@@ -72,7 +72,6 @@
       fetch(url, options).then(res=>{
         return res.text()
       }).then(res => {
-        console.log("res",res);
         window.location="/dashboard/archives"
       })
     })

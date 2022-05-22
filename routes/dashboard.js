@@ -36,8 +36,27 @@ router.get('/article/create', function (req, res, next) {
   })
 })
 
+router.get('/article/preview/:id', function (req, res, next) {
+  const id = req.params.id
+  let article
+  let categories
+
+  const categoriesShapshot = categoriesRef.once('value')
+  const articlesShapshot = articlesRef.child(id).once('value')
+
+  Promise.all([categoriesShapshot, articlesShapshot]).then((item) => {
+    categories = item[0].val()
+    article = item[1].val()
+
+    res.render('dashboard/preview', {
+      userName,
+      categories,
+      article
+    })
+  })
+})
+
 router.get('/article/:id', function (req, res, next) {
-  console.log('here')
   const id = req.params.id
   let categories = {}
 
