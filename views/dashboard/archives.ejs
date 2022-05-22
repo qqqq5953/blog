@@ -1,79 +1,117 @@
 <% extend('../layouts/dashboard-layout',{userName})%>
 
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="btn-group w-100">
-      <a
-        href="/dashboard/archives?status=public"
-        class="btn btn-outline-secondary w-100 rounded-0 <% if(status==="public"){%> active <%} %> "
-        >已發佈</a
+<div class="position-relative">
+  <% if(deletedArticle){ %> 
+    <div class="position-absolute p-2" style="z-index: 5; top:0; right:0;">
+      <div
+        id="liveToast"
+        class="toast hide"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        data-delay="4000"
       >
-      <a
-        href="/dashboard/archives?status=draft"
-        class="btn btn-outline-secondary w-100 rounded-0  <% if(status==="draft"){%> active <%} %> "
-        >草稿</a
-      >
-      <a class="btn btn-primary" href="/dashboard/article/create">
-            新增文章
-          </a>
+        <div class="toast-header">
+          <i class="fa fa-square text-success mr-2" aria-hidden="true"></i>
+          <strong class="mr-auto text-success"><%= deletedArticle.message %> </strong>
+          <small>Just now</small>
+          <button
+            type="button"
+            class="ml-2 mb-1 close"
+            data-dismiss="toast"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="toast-body"><%= deletedArticle.title.substring(0,22) %> ... </div>
+      </div>
     </div>
-    <% for(let prop in articles){ %>
-    <div class="card my-3">
-      <h4 class="card-header"><%- articles[prop].title %></h4>
-      <div class="card-body">
-        <%- striptags(articles[prop].content).substring(0,150) %> ...
-        <div>
-          <span class="fa fa-clock-o"></span>
-          <%- articles[prop].updateTime %>
-          <span class="fa fa-folder-open-o"></span>
-          <span> <%= categories[articles[prop].category].name %> </span>
+  <% } %> 
+
+  <div class="row justify-content-center">    
+    <div class="col-md-6">
+      <div class="btn-group w-100">
+        <a
+          href="/dashboard/archives?status=public"
+          class="btn btn-outline-secondary w-100 rounded-0 <% if(status==="public"){%> active <%} %> "
+          >已發佈</a
+        >
+        <a
+          href="/dashboard/archives?status=draft"
+          class="btn btn-outline-secondary w-100 rounded-0  <% if(status==="draft"){%> active <%} %> "
+          >草稿</a
+        >
+        <a class="btn btn-primary w-50 rounded-0" href="/dashboard/article/create">
+              新增文章
+            </a>
+      </div>
+      <% for(let prop in articles){ %>
+      <div class="card my-3">
+        <h4 class="card-header"><%- articles[prop].title %><i class="fa-solid fa-shapes"></i></h4>
+        <div class="card-body">
+          <%- striptags(articles[prop].content).substring(0,150) %> ...
+          <div>
+            <span class="fa fa-clock-o"></span>
+            <%- articles[prop].updateTime %>
+            <span class="fa fa-folder-open-o"></span>
+            <span> <%= categories[articles[prop].category].name %> </span>
+          </div>
+        </div>
+        <div class="card-footer p-0 btn-group">
+          <a
+            href="#"
+            class="btn btn-outline-danger w-25 rounded-0 deletePost"
+            data-id="<%= articles[prop].id %> "
+            data-title="<%= articles[prop].title %>"
+            >刪除</a
+          >
+          <a href="/dashboard/article/<%= articles[prop].id %>" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
+          <a
+            href="/dashboard/article/preview/<%= articles[prop].id %>"
+            target="_blank"
+            class="btn btn-outline-secondary w-100 rounded-0"
+            >預覽</a
+          >
         </div>
       </div>
-      <div class="card-footer p-0 btn-group">
-        <a
-          href="#"
-          class="btn btn-outline-danger rounded-0 deletePost"
-          data-id="<%= articles[prop].id %> "
-          data-title="<%= articles[prop].title %>"
-          >刪除</a
-        >
-        <a href="/dashboard/article/<%= articles[prop].id %>" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
-        <a
-          href="/dashboard/article/preview/<%= articles[prop].id %>"
-          target="_blank"
-          class="btn btn-outline-secondary w-100 rounded-0"
-          >預覽</a
-        >
-      </div>
+      <% } %>
     </div>
-    <% } %>
   </div>
 </div>
+
 <%# include("../partials/pagination")%>
 
 <script>
-  const deletePosts = document.querySelectorAll(".deletePost")
+  $(document).ready(function () {
+    $('.toast').toast('show')
+  })
 
-  deletePosts.forEach(deletePost => {
-    deletePost.addEventListener("click", e => {
+  const deletePosts = document.querySelectorAll('.deletePost')
+
+  deletePosts.forEach((deletePost) => {
+    deletePost.addEventListener('click', (e) => {
       e.preventDefault()
 
       const id = e.target.dataset.id
       const url = `/dashboard/article/delete/${id}`
       const options = {
-        method:"POST",
+        method: 'POST',
         headers: {
-	      'Content-type': 'application/json; charset=UTF-8'
+          'Content-type': 'application/json; charset=UTF-8'
         }
       }
 
-      if(!confirm("確定刪除文章？")) return
+      if (!confirm('確定刪除文章？')) return
 
-      fetch(url, options).then(res=>{
-        return res.text()
-      }).then(res => {
-        window.location="/dashboard/archives"
-      })
+      fetch(url, options)
+        .then((res) => {
+          return res.text()
+        })
+        .then((res) => {
+          window.location = '/dashboard/archives'
+          console.log('res', res)
+        })
     })
   })
 </script>
