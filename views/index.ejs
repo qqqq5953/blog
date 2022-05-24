@@ -16,7 +16,7 @@
           <div class="p-2">
             <i class="fa fa-tag" aria-hidden="true"></i>
             <a href="#" class="text-info">
-              <%= categories[articles[prop].category].name %>
+              <%= categories[articles[prop].category]?.name || "未分類" %>
             </a>
           </div>
         </div>

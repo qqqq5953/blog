@@ -55,7 +55,7 @@
             <span class="fa fa-clock-o"></span>
             <%- articles[prop].updateTime %>
             <span class="fa fa-folder-open-o"></span>
-            <span> <%= categories[articles[prop].category].name %> </span>
+            <span> <%= categories[articles[prop].category]?.name || "未分類" %> </span>
           </div>
         </div>
         <div class="card-footer p-0 btn-group">
