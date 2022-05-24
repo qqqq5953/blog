@@ -38,15 +38,67 @@
                 >
                   編輯
                 </button>
-                <form
-                  class="ml-2"
-                  method="POST"
-                  action="/dashboard/categories/delete/<%= key %> "
+                <button
+                  type="button"
+                  class="btn btn-outline-danger btn-sm deleteButton"
+                  data-id="<%= key%>"
+                  data-name="<%= categories[key].name %>"
+                  data-toggle="modal"
+                  data-target="#modal"
                 >
-                  <button type="submit" class="btn btn-outline-danger btn-sm">
-                    刪除
-                  </button>
-                </form>
+                  刪除
+                </button>
+                <!-- Modal -->
+                <div
+                  class="modal fade"
+                  id="modal"
+                  tabindex="-1"
+                  aria-labelledby="modelTitle"
+                  aria-hidden="true"
+                >
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header bg-danger">
+                        <h5 class="modal-title text-white" id="modelTitle"></h5>
+                        <button
+                          type="button"
+                          class="close text-white"
+                          data-dismiss="modal"
+                          aria-label="Close"
+                        >
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <p>刪除後無法復原！</p>
+                      </div>
+                      <div class="modal-footer">
+                        <form
+                          class="ml-2"
+                          method="POST"
+                          id="modelForm"
+                          action=""
+                        >
+                          <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-dismiss="modal"
+                          >
+                            關閉
+                          </button>
+                          <button
+                            type="submit"
+                            class="btn btn-danger"
+                            data-toggle="modal"
+                            data-target="#exampleModal"
+                          >
+                            刪除
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </td>
           </tr>
@@ -90,6 +142,7 @@
 </div>
 
 <script>
+  // 編輯
   const editButtons = document.querySelectorAll('.editCategory')
   const addName = document.getElementById('name')
   const addPath = document.getElementById('path')
@@ -104,6 +157,18 @@
       addName.value = categoryName
       addPath.value = categoryPath
       addId.value = categoryId
+    })
+  })
+
+  // 刪除
+  const deleteButton = document.querySelectorAll('.deleteButton')
+  const modelForm = document.getElementById('modelForm')
+  const modelTitle = document.getElementById('modelTitle')
+
+  deleteButton.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      modelForm.action = `/dashboard/categories/delete/${e.target.dataset.id}`
+      modelTitle.innerHTML = `確定刪除 <span class="h5">${e.target.dataset.name}</span>`
     })
   })
 </script>
