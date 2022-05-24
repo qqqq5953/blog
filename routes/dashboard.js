@@ -65,19 +65,6 @@ router.get('/archives', function (req, res) {
   renderData()
 })
 
-router.get('/categories', function (req, res) {
-  categoriesRef.once('value', (snapshot) => {
-    const categories = snapshot.val()
-    const alertMessages = req.flash('info')
-
-    res.render('dashboard/categories', {
-      userName,
-      categories,
-      alertMessages
-    })
-  })
-})
-
 // articles
 router
   .route('/article/create')
@@ -174,30 +161,70 @@ router.post('/article/delete/:id', (req, res) => {
 })
 
 // category
-router.post('/categories/create', (req, res) => {
-  const data = req.body
-  const categoryRef = categoriesRef.push()
-  const key = categoryRef.key
-  data.id = key
+router.get('/categories', function (req, res) {
+  categoriesRef.once('value', (snapshot) => {
+    const categories = snapshot.val()
+    const alertMessages = req.flash('info')
+    console.log('alertMessages', alertMessages)
 
-  // 判斷是否已有相同路徑
-  ;(async () => {
-    const snapshot = await categoriesRef
-      .orderByChild('path')
-      .equalTo(data.path)
-      .once('value')
-
-    if (snapshot.val() !== null) {
-      req.flash('info', '已有相同路徑')
-      res.redirect('/dashboard/categories')
-      return
-    }
-
-    categoryRef.set(data).then(() => {
-      res.redirect('/dashboard/categories')
+    res.render('dashboard/categories', {
+      userName,
+      categories,
+      alertMessages
     })
-  })()
+  })
 })
+
+router.post('/categories/create', async (req, res, next) => {
+  if (req.body.name === '' || req.body.path === '') {
+    req.flash('info', '分類或路徑不得為空')
+    res.redirect('/dashboard/categories')
+    return
+  }
+
+  const data = req.body
+  const name = data.name
+  const path = data.path
+  const id = data.id
+  const categorySnapshot = await categoriesRef.once('value')
+  const pathSnapshot = await categoriesRef
+    .orderByChild('path')
+    .equalTo(path)
+    .once('value')
+  const nameSnapshot = await categoriesRef
+    .orderByChild('name')
+    .equalTo(name)
+    .once('value')
+  const categories = categorySnapshot.val()
+  const categoriesPath = pathSnapshot.val()
+  const categoriesName = nameSnapshot.val()
+
+  // 編輯：路徑或項目名其中一個要更改才可以更新 且 須為已存在的項目
+  if (
+    (categoriesPath?.[id].path !== path ||
+      categoriesPath?.[id].name !== name) &&
+    categories[id]
+  ) {
+    const updateData = { name, path, id }
+    categoriesRef.child(id).update(updateData)
+    req.flash('info', '更新成功')
+    res.redirect('/dashboard/categories')
+    return
+  }
+
+  // 新增：不得輸入已存在的路徑或名稱
+  if (categoriesPath !== null || categoriesName !== null) {
+    req.flash('info', '已有相同名稱或路徑')
+    res.redirect('/dashboard/categories')
+    return
+  }
+
+  const categoryRef = categoriesRef.push()
+  categoryRef.set({ ...data, id: categoryRef.key })
+  res.redirect('/dashboard/categories')
+})
+
+router.post('/dashboard/categories/edit/:id', (req, res) => {})
 
 router.post('/categories/delete/:id', (req, res) => {
   const id = req.params.id

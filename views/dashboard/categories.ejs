@@ -1,44 +1,59 @@
-<% extend('../layouts/dashboard-layout',{userName})%>
+<% extend('../layouts/dashboard-layout',{userName})%> <% var id = undefined %>
 
 <div class="row justify-content-center">
   <div class="col-md-6">
     <% if(alertMessages.length > 0){ %>
     <div class="alert alert-warning"><%= alertMessages[0] %></div>
     <% } %>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>名稱</th>
-          <th>路徑</th>
-          <th width="30"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(key in categories){ %>
-        <tr>
-          <td class="align-middle"><%= categories[key].name %></td>
-          <td>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              value="<%=
-    categories[key].path %> "
-            />
-          </td>
-          <td class="align-middle">
-            <form
-              method="POST"
-              action="/dashboard/categories/delete/<%= key %> "
-            >
-              <button type="submit" class="btn btn-outline-danger btn-sm">
-                刪除
-              </button>
-            </form>
-          </td>
-        </tr>
-        <% } %>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="w-25">名稱</th>
+            <th class="w-50">路徑</th>
+            <th class="w-25"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(key in categories){ %>
+          <tr>
+            <td class="align-middle"><%= categories[key].name %></td>
+            <td class="align-middle">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                value="<%=
+    categories[key].path %>"
+              />
+            </td>
+            <td class="align-middle">
+              <div class="d-flex">
+                <button
+                  data-id="<%= key%>"
+                  data-name="<%= categories[key].name %>"
+                  data-path="<%=
+    categories[key].path %>"
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm editCategory"
+                >
+                  編輯
+                </button>
+                <form
+                  class="ml-2"
+                  method="POST"
+                  action="/dashboard/categories/delete/<%= key %> "
+                >
+                  <button type="submit" class="btn btn-outline-danger btn-sm">
+                    刪除
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
 
     <form method="POST" action="/dashboard/categories/create">
       <table class="table">
@@ -63,12 +78,32 @@
               name="path"
               placeholder="請輸入分類路徑"
             />
+            <input type="hidden" id="id" name="id" value="" />
           </td>
         </tr>
       </table>
       <div class="text-right">
-        <button type="submit" class="btn btn-primary">更新資訊</button>
+        <button type="submit" class="btn btn-primary">新增</button>
       </div>
     </form>
   </div>
 </div>
+
+<script>
+  const editButtons = document.querySelectorAll('.editCategory')
+  const addName = document.getElementById('name')
+  const addPath = document.getElementById('path')
+  const addId = document.getElementById('id')
+
+  editButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const categoryName = e.target.dataset.name
+      const categoryPath = e.target.dataset.path
+      const categoryId = e.target.dataset.id
+
+      addName.value = categoryName
+      addPath.value = categoryPath
+      addId.value = categoryId
+    })
+  })
+</script>
