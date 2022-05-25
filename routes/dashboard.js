@@ -186,24 +186,25 @@ router.post('/categories/create', async (req, res, next) => {
   const name = data.name
   const path = data.path
   const id = data.id
-  const categorySnapshot = await categoriesRef.once('value')
-  const pathSnapshot = await categoriesRef
+
+  const categoriesSnapshot = await categoriesRef.once('value')
+  const categoriesPathSnapshot = await categoriesRef
     .orderByChild('path')
     .equalTo(path)
     .once('value')
-  const nameSnapshot = await categoriesRef
+  const categoriesNameSnapshot = await categoriesRef
     .orderByChild('name')
     .equalTo(name)
     .once('value')
-  const categories = categorySnapshot.val()
-  const categoriesPath = pathSnapshot.val()
-  const categoriesName = nameSnapshot.val()
+  const categories = categoriesSnapshot.val()
+  const categoriesPath = categoriesPathSnapshot.val()
+  const categoriesName = categoriesNameSnapshot.val()
 
   // 編輯：路徑或項目名其中一個要更改才可以更新 且 須為已存在的項目
   if (
     (categoriesPath?.[id].path !== path ||
       categoriesPath?.[id].name !== name) &&
-    categories[id]
+    categories?.[id]
   ) {
     const updateData = { name, path, id }
     categoriesRef.child(id).update(updateData)
@@ -221,6 +222,7 @@ router.post('/categories/create', async (req, res, next) => {
 
   const categoryRef = categoriesRef.push()
   categoryRef.set({ ...data, id: categoryRef.key })
+  req.flash('info', '新增成功')
   res.redirect('/dashboard/categories')
 })
 

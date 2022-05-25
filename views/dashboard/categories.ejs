@@ -19,12 +19,13 @@
           <tr>
             <td class="align-middle"><%= categories[key].name %></td>
             <td class="align-middle">
-              <input
+              <!-- <input
                 type="text"
                 class="form-control form-control-sm"
                 value="<%=
     categories[key].path %>"
-              />
+              /> -->
+              <%= categories[key].path %>
             </td>
             <td class="align-middle">
               <div class="d-flex">
@@ -36,11 +37,11 @@
                   type="button"
                   class="btn btn-outline-secondary btn-sm editCategory"
                 >
-                  編輯
+                  更新
                 </button>
                 <button
                   type="button"
-                  class="btn btn-outline-danger btn-sm deleteButton"
+                  class="btn btn-outline-danger btn-sm deleteButton ml-3"
                   data-id="<%= key%>"
                   data-name="<%= categories[key].name %>"
                   data-toggle="modal"
@@ -110,8 +111,8 @@
     <form method="POST" action="/dashboard/categories/create">
       <table class="table">
         <tr>
-          <td class="align-middle">新增</td>
-          <td>
+          <td class="align-middle">新增 / 更新</td>
+          <td class="align-middle">
             <label for="name">分類名稱</label>
             <input
               type="text"
