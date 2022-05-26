@@ -1,6 +1,6 @@
 <% extend('./layouts/layout')%>
 
-<div class="row my-4 justify-content-center">
+<div class="row my-4">
   <div class="col-md-9">
     <% for(let prop in articles){ %>
     <div class="card mb-3">
@@ -23,6 +23,52 @@
         <div><%- striptags(articles[prop].content).substring(0,150) %> ...</div>
       </div>
     </div>
-    <% } %> <%- include("./partials/pagination") %>
+    <% } %>
+    <!-- pagination -->
+    <% if(isSorted){ %> <%- include("./partials/pagination-sort") %> <% } else {
+    %> <%- include("./partials/pagination") %> <% } %>
   </div>
+  <aside class="col-md-3">
+    <div class="border p-3">
+      <section>
+        <% for(let prop in categories){ %>
+        <form action="/<%= prop %>" method="get">
+          <button
+            type="submit"
+            class="btn btn-outline-success mb-2"
+            data-id="<%= prop %> "
+          >
+            <%= categories[prop].name %>
+          </button>
+        </form>
+
+        <% } %>
+      </section>
+    </div>
+  </aside>
 </div>
+
+<script>
+  const sortButton = document.querySelectorAll('.sortButton')
+
+  sortButton.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const id = e.target.dataset.id
+      const url = `/${id}`
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        }
+      }
+
+      fetch(url, options)
+      // .then((res) => {
+      //   return res.text()
+      // })
+      // .then((res) => {
+      //   console.log(res)
+      // })
+    })
+  })
+</script>

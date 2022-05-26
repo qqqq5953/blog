@@ -226,8 +226,6 @@ router.post('/categories/create', async (req, res, next) => {
   res.redirect('/dashboard/categories')
 })
 
-router.post('/dashboard/categories/edit/:id', (req, res) => {})
-
 router.post('/categories/delete/:id', (req, res) => {
   const id = req.params.id
   categoriesRef.child(id).remove()

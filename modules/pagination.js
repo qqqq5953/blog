@@ -1,4 +1,4 @@
-const pagination = (articles, pageNumber, paginatedArticles, page) => {
+const pagination = (articles, pageNumber) => {
   const totalArticles = articles.length
   const perpage = 3
   const pageTotal = Math.ceil(totalArticles / perpage)
@@ -8,9 +8,9 @@ const pagination = (articles, pageNumber, paginatedArticles, page) => {
   const minIndex = currentPage * perpage - perpage
   const maxIndex = currentPage * perpage
 
-  paginatedArticles = articles.slice(minIndex, maxIndex)
+  const paginatedArticles = articles.slice(minIndex, maxIndex)
 
-  page = {
+  const page = {
     currentPage,
     pageTotal,
     hasPrev: currentPage > 1,

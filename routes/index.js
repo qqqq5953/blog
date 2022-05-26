@@ -6,53 +6,68 @@ const pagination = require('../modules/pagination')
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
+let paginatedArticles_global = []
+let categories_global
+let page_global
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', function (req, res) {
   req.session.destroy()
-
-  let categories = {}
-  let articlesArray = []
-  let pageObject = {}
-  const articles = []
-  const pageNumber = parseInt(req.query.page) || 1
 
   const getCategories = async () => {
     const snapshot = await categoriesRef.once('value')
-    categories = snapshot.val()
+    categories_global = snapshot.val()
   }
 
   const getArticlesByUpdateTime = async () => {
+    const articles = []
     const snapshot = await articlesRef.orderByChild('updateTime').once('value')
     snapshot.forEach((childSnapshot) => {
       if ('public' === childSnapshot.val().status) {
         articles.push(childSnapshot.val())
       }
     })
-    articles.reverse()
+    return articles.reverse()
   }
 
   const renderData = async () => {
     await getCategories()
-    await getArticlesByUpdateTime()
-
-    const { paginatedArticles, page } = pagination(
-      articles,
-      pageNumber,
-      articlesArray,
-      pageObject
-    )
+    const articles = await getArticlesByUpdateTime()
+    const pageNumber = parseInt(req.query.page) || 1
+    const { paginatedArticles, page } = pagination(articles, pageNumber)
+    paginatedArticles_global = []
+    paginatedArticles_global = paginatedArticles
+    page_global = page
 
     res.render('index', {
-      title: 'Express',
-      categories,
-      articles: paginatedArticles,
+      categories: categories_global,
+      articles: paginatedArticles_global,
       page,
-      striptags
+      striptags,
+      isSorted: false
     })
   }
 
   renderData()
+})
+
+router.get('/:id', async (req, res) => {
+  const id = req.params.id
+  await filterByCategory(req, id)
+
+  res.render('index', {
+    categories: categories_global,
+    articles: paginatedArticles_global,
+    page: page_global,
+    striptags,
+    isSorted: true,
+    id
+  })
+})
+
+router.post('/:id', async (req, res) => {
+  const id = req.params.id
+  res.redirect(`/${id}`)
 })
 
 router.get('/post/:id', function (req, res, next) {
@@ -90,5 +105,24 @@ router.get('/post/:id', function (req, res, next) {
 
   renderData()
 })
+
+async function filterByCategory(req, categoryId) {
+  const articlesSnapshot = await articlesRef
+    .orderByChild('category')
+    .equalTo(categoryId)
+    .once('value')
+
+  const articles = []
+  articlesSnapshot.forEach((childSnapshot) => {
+    articles.push(childSnapshot.val())
+  })
+
+  const pageNumber = parseInt(req.query.page) || 1
+  const { paginatedArticles, page } = pagination(articles, pageNumber)
+
+  paginatedArticles_global = []
+  paginatedArticles_global = paginatedArticles
+  page_global = page
+}
 
 module.exports = router

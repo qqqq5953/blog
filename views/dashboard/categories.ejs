@@ -18,15 +18,7 @@
           <% for(key in categories){ %>
           <tr>
             <td class="align-middle"><%= categories[key].name %></td>
-            <td class="align-middle">
-              <!-- <input
-                type="text"
-                class="form-control form-control-sm"
-                value="<%=
-    categories[key].path %>"
-              /> -->
-              <%= categories[key].path %>
-            </td>
+            <td class="align-middle"><%= categories[key].path %></td>
             <td class="align-middle">
               <div class="d-flex">
                 <button
