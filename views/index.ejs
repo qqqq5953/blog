@@ -25,14 +25,19 @@
     </div>
     <% } %>
     <!-- pagination -->
-    <% if(isSorted){ %> <%- include("./partials/pagination-sort") %> <% } else {
-    %> <%- include("./partials/pagination") %> <% } %>
+    <%- include("./partials/pagination") %>
   </div>
   <aside class="col-md-3">
     <div class="border p-3">
       <section>
         <% for(let prop in categories){ %>
-        <form action="/<%= prop %>" method="get">
+        <form action="/" method="get">
+          <input
+            type="hidden"
+            name="category"
+            value="<%= categories[prop].name %>"
+          />
+          <input type="hidden" name="page" value="1" />
           <button
             type="submit"
             class="btn btn-outline-success mb-2"
@@ -41,8 +46,13 @@
             <%= categories[prop].name %>
           </button>
         </form>
-
         <% } %>
+        <form action="/" method="get">
+          <input type="hidden" name="page" value="1" />
+          <button type="submit" class="btn btn-outline-success mb-2">
+            全部
+          </button>
+        </form>
       </section>
     </div>
   </aside>

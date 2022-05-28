@@ -3,7 +3,7 @@
     <li class="page-item <% if(!page.hasPrev){ %> disabled <% } %>">
       <a
         class="page-link"
-        href="/?page=<%= page.currentPage - 1%>"
+        href="/?<%= categoryQueryString %>page=<%= page.currentPage - 1%>"
         tabindex="-1"
         >Previous</a
       >
@@ -11,12 +11,18 @@
 
     <% for(let i=1; i< page.pageTotal+1; i++){ %>
     <li class="page-item <% if(page.currentPage === i){ %> active <% } %>">
-      <a class="page-link" href="/?page=<%= i %> "> <%= i %> </a>
+      <a class="page-link" href="/?<%= categoryQueryString %>page=<%- i %>">
+        <%= i %>
+      </a>
     </li>
     <% } %>
 
     <li class="page-item <% if(!page.hasNext){ %> disabled <% } %>">
-      <a class="page-link" href="/?page=<%= page.currentPage + 1%>">Next</a>
+      <a
+        class="page-link"
+        href="/?<%= categoryQueryString %>page=<%= page.currentPage + 1%>"
+        >Next</a
+      >
     </li>
   </ul>
 </nav>
