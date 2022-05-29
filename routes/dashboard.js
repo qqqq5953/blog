@@ -68,21 +68,22 @@ router.get('/archives', function (req, res) {
 // articles
 router
   .route('/article/create')
-  .get((req, res) => {
-    categoriesRef.once('value').then((snapshot) => {
-      const categories = snapshot.val()
-      res.render('dashboard/article', {
-        userName,
-        categories,
-        article: {}
-      })
+  .get(async (req, res) => {
+    const categoriesSnapshot = await categoriesRef.once('value')
+    const categories = categoriesSnapshot.val()
+    const info = req.flash('info')[0]
+
+    res.render('dashboard/article', {
+      userName,
+      categories,
+      article: {},
+      info,
+      isArticleCreated: info != null
     })
   })
   .post((req, res) => {
     const data = req.body
     const articleRef = articlesRef.push()
-    const key = articleRef.key
-    // const updateTime = Math.floor(Date.now() / 1000)
     const updateTime = () => {
       const today = new Date()
       const dd = String(today.getDate()).padStart(2, '0')
@@ -91,12 +92,13 @@ router
       return yyyy + '-' + mm + '-' + dd
     }
 
-    data.id = key
-    data.updateTime = updateTime()
-    articleRef.set(data)
-    res.redirect(`/dashboard/article/${key}`)
+    if (data.title === '' || data.content === '') return
 
-    console.log(data)
+    const newArticle = { ...data, id: articleRef.key, updateTime: updateTime() }
+    articleRef.set(newArticle).then(() => {
+      req.flash('info', { title: newArticle.title, message: '新增成功' })
+      res.redirect('/dashboard/article/create')
+    })
   })
 
 router.get('/article/:id', (req, res) => {

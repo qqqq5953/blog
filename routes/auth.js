@@ -82,8 +82,8 @@ router.post('/login', function (req, res, next) {
       req.session.uid = user.uid
       // req.session.email = user.email
 
-      // res.redirect('/dashboard')
-      res.redirect(`/dashboard/categories`)
+      res.redirect('/dashboard')
+      // res.redirect(`/dashboard/article/create`)
     })
     .catch((error) => {
       const errorCodeContent = 'auth/wrong-password'
