@@ -74,8 +74,7 @@ router
       userName,
       categories,
       article: {},
-      info,
-      isArticleCreated: info != null
+      info
     })
   })
   .post((req, res) => {
@@ -99,6 +98,7 @@ router
   })
 
 router.get('/article/:id', (req, res) => {
+  const info = req.flash('info')[0]
   const id = req.params.id
   const categoriesSnapshot = categoriesRef.once('value')
   const articleSnapshot = articlesRef.child(id).once('value')
@@ -107,7 +107,12 @@ router.get('/article/:id', (req, res) => {
     const categories = snapshots[0].val()
     const article = snapshots[1].val()
 
-    res.render('dashboard/article', { userName, categories, article })
+    res.render('dashboard/article', {
+      userName,
+      categories,
+      article,
+      info
+    })
   })
 })
 
@@ -132,6 +137,7 @@ router.post('/article/update/:id', (req, res) => {
     .child(id)
     .update(data)
     .then(() => {
+      req.flash('info', { title: data.title, message: '更新成功' })
       res.redirect(`/dashboard/article/${id}`)
     })
 })

@@ -2,7 +2,7 @@
 <% if(article===undefined){var
 article={}} %>
 <div class="position-relative">
-  <% if(isArticleCreated){ %> 
+  <% if(info){ %> 
     <div class="position-absolute p-2" style="z-index: 5; top:0; right:0;">
       <div
         id="liveToast"
@@ -25,7 +25,10 @@ article={}} %>
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="toast-body"><%= info.title.substring(0,22) %>  </div>
+        <div class="toast-body">
+        <%= info.title.substring(0,22) %>
+        <%if(info.title.length > 22){ %>...<% } %>
+        </div>
       </div>
     </div>
   <% } %> 
