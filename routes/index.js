@@ -72,6 +72,7 @@ router.get('/', function (req, res) {
       articles: paginatedArticles,
       categoryQueryString: categoryQuery ? `category=${categoryQuery}&` : '',
       categories,
+      originalUrl: req.originalUrl.split('?')[0],
       page,
       striptags
     })
