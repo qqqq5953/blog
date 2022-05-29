@@ -50,7 +50,8 @@
       <div class="card my-3">
         <h4 class="card-header"><%- articles[prop].title %><i class="fa-solid fa-shapes"></i></h4>
         <div class="card-body">
-          <%- striptags(articles[prop].content).substring(0,150) %> ...
+          <%- striptags(articles[prop].content).substring(0,150) %>
+          <% if(articles[prop].content.length > 150){ %>...<% } %>  
           <div>
             <span class="fa fa-clock-o"></span>
             <%- articles[prop].updateTime %>

@@ -11,23 +11,18 @@ const articlesRef = firebaseAdminDb.ref('/articles/')
 router.get('/', function (req, res) {
   req.session.destroy()
 
-  const getCategories = async () => {
-    const snapshot = await categoriesRef.once('value')
-    const cattegories = snapshot.val()
-    return cattegories
-  }
+  const getCategories = require('../modules/getCategories')
 
-  const sortAllArticlesByUpdateTime = async () => {
-    const articles = []
-    const articlesSnapshot = await articlesRef
-      .orderByChild('updateTime')
+  const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
+
+  const getCategoryId = async (categoryQuery) => {
+    const categorySnapshot = await categoriesRef
+      .orderByChild('name')
+      .equalTo(categoryQuery)
       .once('value')
-    articlesSnapshot.forEach((childSnapshot) => {
-      if ('public' === childSnapshot.val().status) {
-        articles.push(childSnapshot.val())
-      }
-    })
-    return articles.reverse()
+
+    if (categorySnapshot.val() == null) return
+    return Object.values(categorySnapshot.val())[0].id
   }
 
   const getArticlesByCategoryId = async (categoryId) => {
@@ -42,16 +37,6 @@ router.get('/', function (req, res) {
     return articles
   }
 
-  const getCategoryId = async (categoryQuery) => {
-    const categorySnapshot = await categoriesRef
-      .orderByChild('name')
-      .equalTo(categoryQuery)
-      .once('value')
-
-    if (categorySnapshot.val() == null) return
-    return Object.values(categorySnapshot.val())[0].id
-  }
-
   const renderArticles = async () => {
     let articles = []
     const categoryQuery = req.query.category
@@ -61,10 +46,13 @@ router.get('/', function (req, res) {
       if (!categoryId) return res.redirect('/')
       articles = await getArticlesByCategoryId(categoryId)
     } else {
-      articles = await sortAllArticlesByUpdateTime()
+      articles = await sortAllArticlesByUpdateTime(
+        articlesRef,
+        (articleStatus = 'public')
+      )
     }
 
-    const categories = await getCategories()
+    const categories = await getCategories(categoriesRef)
     const pageNumber = parseInt(req.query.page) || 1
     const { paginatedArticles, page } = pagination(articles, pageNumber)
 

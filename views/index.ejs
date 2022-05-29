@@ -20,7 +20,10 @@
             </a>
           </div>
         </div>
-        <div><%- striptags(articles[prop].content).substring(0,150) %> ...</div>
+        <div>
+          <%- striptags(articles[prop].content).substring(0,150) %><%
+          if(articles[prop].content.length > 150){ %>...<% } %>
+        </div>
       </div>
     </div>
     <% } %>

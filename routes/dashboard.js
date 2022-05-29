@@ -31,29 +31,16 @@ router.get('/archives', (req, res) => {
   const articleStatus = req.query.status || 'public'
   const deletedArticle = req.flash('delete')[0]
 
-  const getCategories = async () => {
-    const snapshot = await categoriesRef.once('value')
-    const cattegories = snapshot.val()
-    return cattegories
-  }
+  const getCategories = require('../modules/getCategories')
 
-  const sortAllArticlesByUpdateTime = async () => {
-    const articles = []
-    const articlesSnapshot = await articlesRef
-      .orderByChild('updateTime')
-      .once('value')
-    articlesSnapshot.forEach((childSnapshot) => {
-      // 決定是草稿還是公開文章
-      if (articleStatus === childSnapshot.val().status) {
-        articles.push(childSnapshot.val())
-      }
-    })
-    return articles.reverse()
-  }
+  const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
 
   const renderArticles = async () => {
-    const categories = await getCategories()
-    const articles = await sortAllArticlesByUpdateTime()
+    const categories = await getCategories(categoriesRef)
+    const articles = await sortAllArticlesByUpdateTime(
+      articlesRef,
+      articleStatus
+    )
 
     const categoryQuery = req.query.category
     const pageNumber = parseInt(req.query.page) || 1
