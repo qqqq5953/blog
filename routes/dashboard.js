@@ -2,7 +2,8 @@ const express = require('express')
 const router = express.Router()
 const firebaseAdminDb = require('../connection/firebase_admin')
 const striptags = require('striptags')
-let userName
+const pagination = require('../modules/pagination')
+let userName = 'Andy'
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
@@ -11,6 +12,7 @@ const usersRef = firebaseAdminDb.ref('/users/')
 router.get('/', (req, res) => {
   const getUserName = async () => {
     const uid = req.session.uid
+    if (!uid) return (userName = 'Andy')
     const snapshot = await usersRef.child(uid).once('value')
     userName = snapshot.val().userName
   }
@@ -25,44 +27,52 @@ router.get('/', (req, res) => {
   renderData()
 })
 
-router.get('/archives', function (req, res) {
+router.get('/archives', (req, res) => {
+  const articleStatus = req.query.status || 'public'
   const deletedArticle = req.flash('delete')[0]
-  console.log('deleteMessage', deletedArticle)
-
-  let categories = {}
-  const articles = []
-  const status = req.query.status || 'public'
 
   const getCategories = async () => {
     const snapshot = await categoriesRef.once('value')
-    categories = snapshot.val()
+    const cattegories = snapshot.val()
+    return cattegories
   }
 
-  const getArticlesByUpdateTime = async () => {
-    const snapshot = await articlesRef.orderByChild('updateTime').once('value')
-    snapshot.forEach((childSnapshot) => {
+  const sortAllArticlesByUpdateTime = async () => {
+    const articles = []
+    const articlesSnapshot = await articlesRef
+      .orderByChild('updateTime')
+      .once('value')
+    articlesSnapshot.forEach((childSnapshot) => {
       // 決定是草稿還是公開文章
-      if (status === childSnapshot.val().status) {
+      if (articleStatus === childSnapshot.val().status) {
         articles.push(childSnapshot.val())
       }
     })
-    articles.reverse()
+    return articles.reverse()
   }
 
-  const renderData = async () => {
-    await getCategories()
-    await getArticlesByUpdateTime()
+  const renderArticles = async () => {
+    const categories = await getCategories()
+    const articles = await sortAllArticlesByUpdateTime()
+
+    const categoryQuery = req.query.category
+    const pageNumber = parseInt(req.query.page) || 1
+    const { paginatedArticles, page } = pagination(articles, pageNumber)
+
     res.render('dashboard/archives', {
-      userName,
+      categoryQueryString: categoryQuery ? `category=${categoryQuery}&` : '',
+      articles: paginatedArticles,
+      originalUrl: req.originalUrl.split('?')[0],
       categories,
-      articles,
+      userName,
+      page,
       striptags,
-      status,
+      articleStatus,
       deletedArticle
     })
   }
 
-  renderData()
+  renderArticles()
 })
 
 // articles

@@ -34,12 +34,12 @@
       <div class="btn-group w-100">
         <a
           href="/dashboard/archives?status=public"
-          class="btn btn-outline-secondary w-100 rounded-0 <% if(status==="public"){%> active <%} %> "
+          class="btn btn-outline-secondary w-100 rounded-0 <% if(articleStatus==="public"){%> active <%} %> "
           >已發佈</a
         >
         <a
           href="/dashboard/archives?status=draft"
-          class="btn btn-outline-secondary w-100 rounded-0  <% if(status==="draft"){%> active <%} %> "
+          class="btn btn-outline-secondary w-100 rounded-0  <% if(articleStatus==="draft"){%> active <%} %> "
           >草稿</a
         >
         <a class="btn btn-primary w-50 rounded-0" href="/dashboard/article/create">
@@ -76,11 +76,13 @@
         </div>
       </div>
       <% } %>
+
+      <%- include("../partials/pagination")%>
     </div>
   </div>
 </div>
 
-<%# include("../partials/pagination")%>
+
 
 <script>
   $(document).ready(function () {
