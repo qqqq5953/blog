@@ -15,6 +15,14 @@
       integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
       crossorigin="anonymous"
     />
+    <!-- Bootswatch CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.6.1/journal/bootstrap.min.css"
+      integrity="sha512-uxeJKeur4Xsr2G34/0G7zjr2jNkx9ICMzn2eueNYgrofsWiWAC4Tqdq3pHbn1lfaWYQafovMfLTfZAsZq3i/WQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <style>
       html {
         font-size: 14px;
@@ -43,7 +51,7 @@
     <script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
   </head>
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-md navbar-dark bg-info">
       <a class="navbar-brand" href="/dashboard">Blog 控制台</a>
       <button
         class="navbar-toggler"
@@ -74,8 +82,8 @@
         </div>
       </div>
     </nav>
-    <div class="main container-fluid py-4"><%- content %></div>
-    <footer class="py-3 bg-light text-secondary text-center">
+    <div class="container-fluid container-xl py-4"><%- content %></div>
+    <footer class="py-3 bg-secondary text-light text-center">
       六角學院後台管理系統
     </footer>
   </body>

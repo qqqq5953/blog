@@ -1,65 +1,79 @@
 <% extend('./layouts/layout')%>
 
-<div class="row my-4">
-  <div class="col-md-9">
-    <% for(let prop in articles){ %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <a href="/post/<%- articles[prop].id %>">
-          <h2 class="text-primary"><%- articles[prop].title %></h2></a
+<nav class="row px-4 px-md-0">
+  <div class="col-12">
+    <div
+      class="py-3 d-flex justify-content-between justify-content-sm-start align-items-centerå"
+    >
+      <form action="/" method="get" class="">
+        <input type="hidden" name="page" value="1" />
+        <button
+          type="submit"
+          class="btn btn-sm btn-outline-info mb-2 rounded-1"
         >
-        <div class="d-flex flex-row text-secondary small">
-          <div class="p-2">
+          全部
+        </button>
+      </form>
+      <% for(let prop in categories){ %>
+      <form action="/" method="get" class="ml-sm-2">
+        <input
+          type="hidden"
+          name="category"
+          value="<%= categories[prop].name %>"
+        />
+        <input type="hidden" name="page" value="1" />
+        <button
+          type="submit"
+          class="btn btn-sm btn-outline-info mb-2 rounded-1"
+          data-id="<%= prop %> "
+        >
+          <%= categories[prop].name %>
+        </button>
+      </form>
+      <% } %>
+    </div>
+  </div>
+</nav>
+
+<section class="row px-4 px-md-0">
+  <% for(let prop in articles){ %>
+  <div class="col-lg-4 col-md-6 col-12 mb-3">
+    <div
+      class="card mb-3 h-100 border-top border-left-0 border-right-0 border-bottom-0 rounded-lg border-primary shadow-sm"
+    >
+      <div class="card-body d-flex flex-column">
+        <h2 class="text-dark mb-0" style="letter-spacing: 2.5px">
+          <%- articles[prop].title %>
+        </h2>
+        <div class="d-flex small mt-auto py-2">
+          <div class="pr-2 text-secondary">
             <span class="fa fa-clock-o"></span>
             <%- articles[prop].updateTime %>
           </div>
-          <div class="p-2">
+          <div class="text-primary">
             <i class="fa fa-tag" aria-hidden="true"></i>
-            <a href="#" class="text-info">
-              <%= categories[articles[prop].category]?.name || "未分類" %>
-            </a>
+            <span>
+              <%= categories[articles[prop].category]?.name || "未分類" %></span
+            >
           </div>
         </div>
         <div>
-          <%- striptags(articles[prop].content).substring(0,150) %><%
-          if(articles[prop].content.length > 150){ %>...<% } %>
+          <%- striptags(articles[prop].content).substring(0,150) %>
+          <span><%if(articles[prop].content.length > 150){ %>...<% } %></span>
         </div>
+        <a
+          href="/post/<%- articles[prop].id %>"
+          class="text-decoration-none stretched-link"
+        ></a>
       </div>
     </div>
-    <% } %>
-    <!-- pagination -->
-    <%- include("./partials/pagination") %>
   </div>
-  <aside class="col-md-3">
-    <div class="border p-3">
-      <section>
-        <% for(let prop in categories){ %>
-        <form action="/" method="get">
-          <input
-            type="hidden"
-            name="category"
-            value="<%= categories[prop].name %>"
-          />
-          <input type="hidden" name="page" value="1" />
-          <button
-            type="submit"
-            class="btn btn-outline-success mb-2"
-            data-id="<%= prop %> "
-          >
-            <%= categories[prop].name %>
-          </button>
-        </form>
-        <% } %>
-        <form action="/" method="get">
-          <input type="hidden" name="page" value="1" />
-          <button type="submit" class="btn btn-outline-success mb-2">
-            全部
-          </button>
-        </form>
-      </section>
-    </div>
-  </aside>
-</div>
+
+  <% } %>
+</section>
+
+<!-- pagination -->
+<%- include("./partials/pagination") %>
 
 <script>
   const sortButton = document.querySelectorAll('.sortButton')
@@ -85,3 +99,15 @@
     })
   })
 </script>
+
+<style>
+  .card {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+  }
+</style>

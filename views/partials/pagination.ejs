@@ -1,8 +1,8 @@
-<nav class="my-5" aria-label="Page navigation example">
+<nav class="my-2" aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
     <li class="page-item <% if(!page.hasPrev){ %> disabled <% } %>">
       <a
-        class="page-link"
+        class="page-link border-0"
         href="<%= originalUrl %>?<%= categoryQueryString %>page=<%= page.currentPage - 1%>"
         tabindex="-1"
         >Previous</a
@@ -12,7 +12,7 @@
     <% for(let i=1; i< page.pageTotal+1; i++){ %>
     <li class="page-item <% if(page.currentPage === i){ %> active <% } %>">
       <a
-        class="page-link"
+        class="page-link border-0"
         href="<%= originalUrl %>?<%= categoryQueryString %>page=<%- i %>"
       >
         <%= i %>
@@ -22,7 +22,7 @@
 
     <li class="page-item <% if(!page.hasNext){ %> disabled <% } %>">
       <a
-        class="page-link"
+        class="page-link border-0"
         href="<%= originalUrl %>?<%= categoryQueryString %>page=<%= page.currentPage + 1%>"
         >Next</a
       >

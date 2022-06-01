@@ -28,59 +28,68 @@
       </div>
     </div>
   <% } %> 
-
+  
   <div class="row justify-content-center">    
-    <div class="col-md-6">
-      <div class="btn-group w-100">
-        <a
-          href="/dashboard/archives?status=public"
-          class="btn btn-outline-secondary w-100 rounded-0 <% if(articleStatus==="public"){%> active <%} %> "
-          >已發佈</a
-        >
-        <a
-          href="/dashboard/archives?status=draft"
-          class="btn btn-outline-secondary w-100 rounded-0  <% if(articleStatus==="draft"){%> active <%} %> "
-          >草稿</a
-        >
-        <a class="btn btn-primary w-50 rounded-0" href="/dashboard/article/create">
-              新增文章
-            </a>
-      </div>
-      <% for(let prop in articles){ %>
-      <div class="card my-3">
-        <h4 class="card-header"><%- articles[prop].title %><i class="fa-solid fa-shapes"></i></h4>
-        <div class="card-body">
-          <%- striptags(articles[prop].content).substring(0,150) %>
-          <% if(articles[prop].content.length > 150){ %>...<% } %>  
-          <div>
-            <span class="fa fa-clock-o"></span>
-            <%- articles[prop].updateTime %>
-            <span class="fa fa-folder-open-o"></span>
-            <span> <%= categories[articles[prop].category]?.name || "未分類" %> </span>
-          </div>
+      <div class="col-12 col-sm-8 col-md-6 ">
+        <div class="btn-group w-100">
+          <a
+            href="/dashboard/archives?status=public"
+            class="btn btn-outline-info <% if(articleStatus==="public"){%> active <%} %> "
+            >已發佈</a
+          >
+          <a
+            href="/dashboard/archives?status=draft"
+            class="btn btn-outline-info <% if(articleStatus==="draft"){%> active <%} %> "
+            >草稿</a
+          >
+          <a class="btn btn-primary" style="max-width: 20%;" href="/dashboard/article/create">
+                新增
+              </a>
         </div>
-        <div class="card-footer p-0 btn-group">
-          <a
-            href="#"
-            class="btn btn-outline-danger w-25 rounded-0 deletePost"
-            data-id="<%= articles[prop].id %> "
-            data-title="<%= articles[prop].title %>"
-            >刪除</a
-          >
-          <a href="/dashboard/article/<%= articles[prop].id %>" class="btn btn-outline-secondary w-100 rounded-0">編輯</a>
-          <a
-            href="/dashboard/article/preview/<%= articles[prop].id %>"
-            target="_blank"
-            class="btn btn-outline-secondary w-100 rounded-0"
-            >預覽</a
-          >
+      </div>
+  </div>
+
+  <div class="row justify-content-between py-4">
+      <% for(let prop in articles){ %>
+      <div class="col-12 col-md-6 col-xl-4 mb-4">
+        <div class="card h-100 border-info border-left border-right ">
+          <h4 class="card-header bg-light border-0" style="letter-spacing: 2.5px"><%- articles[prop].title %></h4>
+          <div class="card-body ">
+            <%- striptags(articles[prop].content).substring(0,150) %>
+            <% if(articles[prop].content.length > 150){ %>...<% } %>  
+            <div>
+              <span class="fa fa-clock-o"></span>
+              <%- articles[prop].updateTime %>
+              <span class="fa fa-folder-open-o"></span>
+              <span> <%= categories[articles[prop].category]?.name || "未分類" %> </span>
+            </div>
+          </div>
+          <div class="card-footer bg-light border-0 ">
+            <div class="btn-group w-100">
+              <a
+                href="#"
+                class="btn btn-outline-primary deletePost"
+                style="max-width: 20%"
+                data-id="<%= articles[prop].id %> "
+                data-title="<%= articles[prop].title %>"
+                >刪除</a
+              >
+              <a href="/dashboard/article/<%= articles[prop].id %>" class="btn btn-outline-info">編輯</a>
+              <a
+                href="/dashboard/article/preview/<%= articles[prop].id %>"
+                target="_blank"
+                class="btn btn-outline-info"
+                >預覽</a
+              >
+            </div>
+            
+          </div>
         </div>
       </div>
       <% } %>
-
-      <%- include("../partials/pagination")%>
-    </div>
   </div>
+  <%- include("../partials/pagination")%>
+  
 </div>
 
 
