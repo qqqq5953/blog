@@ -8,18 +8,17 @@
       <h2 class="py-3 text-center">Log in</h2>
       <form method="POST" action="/auth/login">
         <div class="form-group">
-          <label class="font-weight-bold mb-0" for="exampleInputEmail1"
-            >Email</label
-          >
+          <label class="font-weight-bold mb-0" for="email">Email</label>
           <div class="position-relative">
             <input
               type="email"
               class="form-control border-top-0 border-left-0 border-right-0 rounded-0 p-4"
-              id="exampleInputEmail1"
+              id="email"
               name="email"
+              pattern="^\w[\w_.]*@.+\.com(\.\w+)?$"
               aria-describedby="emailHelp"
               placeholder="example@gmail.com"
-              value="qqqq5953@gmail.com"
+              value=""
               required
             />
             <i
@@ -28,7 +27,9 @@
               aria-hidden="true"
             ></i>
           </div>
-          <small class="form-text text-primary"><%= emailError %> </small>
+          <small class="form-text text-primary error-message"
+            ><%= emailError %>
+          </small>
         </div>
         <div class="form-group">
           <label class="font-weight-bold mb-0" for="password">Password</label>
@@ -48,7 +49,9 @@
               aria-hidden="true"
             ></i>
           </div>
-          <small class="form-text text-primary"><%= passwordError %> </small>
+          <small class="form-text text-primary error-message"
+            ><%= passwordError %>
+          </small>
         </div>
         <div class="form-group d-flex justify-content-between">
           <div class="form-check">
@@ -78,3 +81,56 @@
     </div>
   </div>
 </div>
+
+<script>
+  const email = document.getElementById('email')
+  const password = document.getElementById('password')
+  const errorMessage = document.querySelectorAll('.error-message')
+  const [emailErrorMessage, passwordErrorMessage] = errorMessage
+
+  password.addEventListener('click', (e) => {
+    passwordErrorMessage.textContent = ''
+  })
+
+  checkEmailPattern('input')
+  checkEmailPattern('blur')
+  checkEmailPattern('click')
+
+  function checkEmailPattern(event) {
+    email.addEventListener(event, (e) => {
+      if (event === 'click') return checkByErrorMessageContent(e)
+      responseToEmailPattern(e)
+    })
+  }
+
+  function checkByErrorMessageContent(e) {
+    if (
+      emailErrorMessage.textContent === 'correct pattern' ||
+      emailErrorMessage.textContent === 'incorrect pattern'
+    ) {
+      responseToEmailPattern(e)
+    } else {
+      clearEmailErrorMessage()
+    }
+  }
+
+  function responseToEmailPattern(e) {
+    const regex = new RegExp(e.target.pattern)
+
+    if (isPatternCheched(regex, e.target.value)) {
+      emailErrorMessage.textContent = 'correct pattern'
+      emailErrorMessage.classList.add('text-info')
+    } else {
+      emailErrorMessage.textContent = 'incorrect pattern'
+      emailErrorMessage.classList.remove('text-info')
+    }
+  }
+
+  function isPatternCheched(regex, inputValue) {
+    return regex.test(inputValue)
+  }
+
+  function clearEmailErrorMessage() {
+    emailErrorMessage.textContent = ''
+  }
+</script>
