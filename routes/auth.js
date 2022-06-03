@@ -34,7 +34,10 @@ router.post('/signup', (req, res, next) => {
   const confirmPassword = req.body.confirm_password
 
   if (password !== confirmPassword) {
-    req.flash('confirmPasswordError', '兩次密碼不同')
+    req.flash(
+      'confirmPasswordError',
+      'The password confirmation does not match.'
+    )
     res.redirect('/auth/signup')
     return
   }

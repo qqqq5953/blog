@@ -1,84 +1,115 @@
-<% extend('./layouts/layout')%>
+<% extend('./layouts/auth')%>
 
-<div class="row justify-content-center">
-  <div class="col-sm-6">
-    <h2>註冊</h2>
-    <form method="POST" action="/auth/signup">
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email</label>
-        <input
-          type="text"
-          class="form-control"
-          id="userName"
-          name="userName"
-          aria-describedby="userNameHelp"
-          placeholder="請輸入使用者名稱"
-          value="Andy"
-          required
-        />
-      </div>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          id="exampleInputEmail1"
-          name="email"
-          aria-describedby="emailHelp"
-          placeholder="請輸入 email"
-          value="qqqq5953@gmail.com"
-          required
-        />
-        <small id="emailHelp" class="form-text text-danger"
-          ><%= emailError %>
-        </small>
-      </div>
-      <div class="form-group">
-        <label for="password">密碼</label>
-        <input
-          type="password"
-          class="form-control"
-          id="password"
-          name="password"
-          placeholder="請輸入密碼"
-          value="123123"
-          required
-        />
-        <small id="emailHelp" class="form-text text-danger"
-          ><%= passwordError %>
-        </small>
-      </div>
-      <div class="form-group">
-        <label for="confirm_password">確認密碼</label>
-        <input
-          type="password"
-          class="form-control"
-          id="confirm_password"
-          name="confirm_password"
-          placeholder="確認密碼"
-          value="123123"
-          required
-        />
-        <small id="emailHelp" class="form-text text-danger"
-          ><%= confirmPasswordError %>
-        </small>
-      </div>
-      <div class="form-check">
-        <input
-          type="checkbox"
-          class="form-check-input"
-          id="confirm"
-          checked
-          required
-        />
-        <label class="form-check-label" for="confirm"
-          >請確認你了解這是自己做的 Blog</label
-        >
-      </div>
-      <a href="/auth/login">已經有帳戶？</a>
-      <div class="text-right mt-3">
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </div>
-    </form>
+<div class="row justify-content-center align-items-center h-100">
+  <div
+    class="col-11 col-sm-8 col-md-6 col-lg-5 col-xl-4 mt-5"
+    style="max-width: 450px"
+  >
+    <div class="shadow px-4 pt-3 pb-4 rounded-lg bg-white">
+      <h2 class="py-3 text-center">Sign up</h2>
+      <form method="POST" action="/auth/signup">
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="font-weight-bold mb-0"
+            >Username</label
+          >
+          <div class="position-relative">
+            <input
+              type="text"
+              class="form-control border-top-0 border-left-0 border-right-0 rounded-0 p-4"
+              id="userName"
+              name="userName"
+              aria-describedby="userNameHelp"
+              placeholder="請輸入使用者名稱"
+              value="Andy"
+              required
+            />
+            <i
+              class="fa fa-user-o position-absolute"
+              style="top: 50%; transform: translatey(-50%); left: 0"
+              aria-hidden="true"
+            ></i>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputEmail1" class="font-weight-bold mb-0"
+            >Email</label
+          >
+          <div class="position-relative">
+            <input
+              type="email"
+              class="form-control border-top-0 border-left-0 border-right-0 rounded-0 p-4"
+              id="exampleInputEmail1"
+              name="email"
+              aria-describedby="emailHelp"
+              placeholder="請輸入 email"
+              value="qqqq5953@gmail.com"
+              required
+            />
+            <i
+              class="fa fa-envelope-o position-absolute"
+              style="top: 50%; transform: translatey(-50%); left: 0"
+              aria-hidden="true"
+            ></i>
+          </div>
+          <small class="form-text text-primary"><%= emailError %> </small>
+        </div>
+        <div class="form-group">
+          <label for="password" class="font-weight-bold mb-0">Password</label>
+          <div class="position-relative">
+            <input
+              type="password"
+              class="form-control border-top-0 border-left-0 border-right-0 rounded-0 p-4"
+              id="password"
+              name="password"
+              placeholder="請輸入密碼"
+              value="123123"
+              required
+            />
+            <i
+              class="fa fa-key position-absolute"
+              style="top: 50%; transform: translatey(-50%); left: 2px"
+              aria-hidden="true"
+            ></i>
+          </div>
+          <small class="form-text text-primary"><%= passwordError %> </small>
+        </div>
+        <div class="form-group">
+          <label for="confirm_password" class="font-weight-bold mb-0"
+            >Confirm Password</label
+          >
+          <div class="position-relative">
+            <input
+              type="password"
+              class="form-control border-top-0 border-left-0 border-right-0 rounded-0 p-4"
+              id="confirm_password"
+              name="confirm_password"
+              placeholder="確認密碼"
+              value="123123"
+              required
+            />
+            <i
+              class="fa fa-key position-absolute"
+              style="top: 50%; transform: translatey(-50%); left: 2px"
+              aria-hidden="true"
+            ></i>
+          </div>
+          <small class="form-text text-primary"
+            ><%= confirmPasswordError %>
+          </small>
+        </div>
+        <div class="text-center" style="margin-top: 2rem">
+          <button
+            type="submit"
+            class="btn btn-primary rounded-pill w-50 login-btn"
+          >
+            Sign up
+          </button>
+        </div>
+        <div class="text-center mt-2">
+          <small>already have an account?</small>
+          <a href="/auth/login" class="text-info h6">log in</a>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>六角部落格 | Bootstrap 4 繁體中文手冊</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <!-- Bootswatch CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.6.1/journal/bootstrap.min.css"
+      integrity="sha512-uxeJKeur4Xsr2G34/0G7zjr2jNkx9ICMzn2eueNYgrofsWiWAC4Tqdq3pHbn1lfaWYQafovMfLTfZAsZq3i/WQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      body,
+      html {
+        height: 100%;
+      }
+
+      .login-body {
+        background: linear-gradient(135deg, #eb6864, rgb(76, 143, 209));
+      }
+
+      .login-btn {
+        background: linear-gradient(135deg, #eb6864, rgb(76, 143, 209));
+        border: none;
+      }
+
+      .login-btn:hover {
+        opacity: 0.85;
+      }
+
+      .form-control {
+        transition: all 0.3s ease-in-out;
+        color: #777;
+        border-bottom: 1px solid #777 !important;
+      }
+
+      .form-control:focus {
+        border: none !important;
+        transform: scale(1.04);
+        padding-left: 32px !important;
+        box-shadow: inset 0px -5px 0px -2px #ee716dc2 !important;
+      }
+
+      .form-control + .fa {
+        transition: all 0.3s ease-in-out;
+      }
+      .form-control:focus + .fa {
+        transform: scale(1.02) translatey(-40%) !important;
+      }
+
+      .fa {
+        color: #777;
+      }
+
+      .navbar {
+        background-color: rgba(76, 143, 209, 0.13) !important;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+      }
+    </style>
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-transparent position-fixed w-100 shadow"
+    >
+      <h1 class="h5">
+        <a class="navbar-brand" href="/">
+          <i class="fa fa-book text-light mr-2" aria-hidden="true"></i>
+          Web Tech
+        </a>
+      </h1>
+    </nav>
+    <main class="container-fluid h-100 login-body"><%- content %></main>
+  </body>
+</html>
