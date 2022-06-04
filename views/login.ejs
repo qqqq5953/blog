@@ -8,18 +8,17 @@
       <h2 class="py-3 text-center">Log in</h2>
       <form method="POST" action="/auth/login">
         <div class="form-group">
-          <label class="font-weight-bold mb-0" for="exampleInputEmail1"
-            >Email</label
-          >
+          <label class="font-weight-bold mb-0" for="email">Email</label>
           <div class="position-relative">
             <input
               type="email"
               class="form-control border-top-0 border-left-0 border-right-0 rounded-0 p-4"
-              id="exampleInputEmail1"
+              id="email"
               name="email"
+              pattern="^\w[\w_.]*@.+\.com(\.\w+)?$"
               aria-describedby="emailHelp"
               placeholder="example@gmail.com"
-              value="qqqq5953@gmail.com"
+              value="<%= invalidEmail %>"
               required
             />
             <i
@@ -28,7 +27,9 @@
               aria-hidden="true"
             ></i>
           </div>
-          <small class="form-text text-primary"><%= emailError %> </small>
+          <small class="form-text text-primary error-message"
+            ><%= emailError %>
+          </small>
         </div>
         <div class="form-group">
           <label class="font-weight-bold mb-0" for="password">Password</label>
@@ -39,16 +40,27 @@
               id="password"
               name="password"
               placeholder="Enter your password"
-              value="123123"
+              value="<%= invalidPassword %>"
               required
             />
+            <!-- 123123 -->
             <i
               class="fa fa-key position-absolute"
               style="top: 50%; transform: translatey(-50%); left: 2px"
               aria-hidden="true"
             ></i>
+            <a
+              href="#"
+              class="position-absolute"
+              style="top: 50%; transform: translatey(-50%); right: 0"
+            >
+              <i class="fa fa-eye-slash" aria-hidden="true"></i>
+              <i class="fa fa-eye d-none" aria-hidden="true"></i>
+            </a>
           </div>
-          <small class="form-text text-primary"><%= passwordError %> </small>
+          <small class="form-text text-primary error-message"
+            ><%= passwordError %>
+          </small>
         </div>
         <div class="form-group d-flex justify-content-between">
           <div class="form-check">
@@ -78,3 +90,73 @@
     </div>
   </div>
 </div>
+
+<script>
+  // 驗證 email 格式
+  const emailInput = document.getElementById('email')
+  const passwordInput = document.getElementById('password')
+  const errorMessage = document.querySelectorAll('.error-message')
+  const [emailErrorMessage, passwordErrorMessage] = errorMessage
+
+  passwordInput.addEventListener('click', () => {
+    clearErrorMessage(passwordErrorMessage)
+  })
+
+  checkEmailPattern('input')
+  checkEmailPattern('blur')
+  checkEmailPattern('click')
+
+  function checkEmailPattern(clientEvent) {
+    emailInput.addEventListener(clientEvent, (event) => {
+      if (clientEvent === 'click') return checkByErrorMessageContent(event)
+      responseToEmailPattern(event)
+    })
+  }
+
+  function checkByErrorMessageContent(event) {
+    if (
+      emailErrorMessage.textContent === 'correct pattern' ||
+      emailErrorMessage.textContent === 'incorrect pattern'
+    ) {
+      responseToEmailPattern(event)
+    } else {
+      clearErrorMessage(emailErrorMessage)
+    }
+  }
+
+  function responseToEmailPattern(event) {
+    const regex = new RegExp(event.target.pattern)
+
+    if (isPatternCheched(regex, event.target.value)) {
+      emailErrorMessage.textContent = 'correct pattern'
+      emailErrorMessage.classList.add('text-info')
+    } else {
+      emailErrorMessage.textContent = 'incorrect pattern'
+      emailErrorMessage.classList.remove('text-info')
+    }
+  }
+
+  function isPatternCheched(regex, inputValue) {
+    return regex.test(inputValue)
+  }
+
+  function clearErrorMessage(errorMessageDOM) {
+    errorMessageDOM.textContent = ''
+  }
+
+  // 隱藏或顯示密碼
+  const showPassword = document.querySelector('.fa-eye-slash')
+  const hidePassword = document.querySelector('.fa-eye')
+
+  showPassword.addEventListener('click', (e) => {
+    passwordInput.type = 'text'
+    showPassword.classList.add('d-none')
+    hidePassword.classList.remove('d-none')
+  })
+
+  hidePassword.addEventListener('click', (e) => {
+    passwordInput.type = 'password'
+    hidePassword.classList.add('d-none')
+    showPassword.classList.remove('d-none')
+  })
+</script>
