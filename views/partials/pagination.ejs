@@ -12,7 +12,7 @@
     <% for(let i=1; i< page.pageTotal+1; i++){ %>
     <li class="page-item <% if(page.currentPage === i){ %> active <% } %>">
       <a
-        class="page-link border-0"
+        class="page-link border-0 text-info"
         href="<%= originalUrl %>?<%= categoryQueryString %>page=<%- i %>"
       >
         <%= i %>
@@ -22,10 +22,17 @@
 
     <li class="page-item <% if(!page.hasNext){ %> disabled <% } %>">
       <a
-        class="page-link border-0"
+        class="page-link border-0 text-info"
         href="<%= originalUrl %>?<%= categoryQueryString %>page=<%= page.currentPage + 1%>"
         >Next</a
       >
     </li>
   </ul>
 </nav>
+
+<style>
+  .page-item.active .page-link {
+    background-color: #369;
+    color: white !important;
+  }
+</style>
