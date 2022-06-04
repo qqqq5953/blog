@@ -91,6 +91,7 @@ router.get('/login', function (req, res, next) {
   res.render('login', {
     title: 'Express',
     invalidEmail: req.flash('invalidEmail'),
+    invalidPassword: req.flash('invalidPassword'),
     emailError: req.flash('emailError'),
     passwordError: req.flash('passwordError')
   })
@@ -112,6 +113,7 @@ router.post('/login', async (req, res) => {
     const errorCodeContent = 'auth/wrong-password'
     sendErrorMessage(req, error, errorCodeContent)
     req.flash('invalidEmail', email)
+    req.flash('invalidPassword', password)
     res.redirect('/auth/login')
   }
 })
