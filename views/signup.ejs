@@ -73,6 +73,14 @@
               style="top: 50%; transform: translatey(-50%); left: 12px"
               aria-hidden="true"
             ></i>
+            <button
+              type="button"
+              class="position-absolute border-0 bg-transparent"
+              style="top: 50%; transform: translatey(-50%); right: 0"
+            >
+              <i class="fa fa-eye-slash" aria-hidden="true"></i>
+              <i class="fa fa-eye d-none" aria-hidden="true"></i>
+            </button>
           </div>
           <small class="form-text text-primary"><%= passwordError %> </small>
         </div>
@@ -117,3 +125,22 @@
     </div>
   </div>
 </div>
+
+<script>
+  // 隱藏或顯示密碼
+  const passwordInput = document.getElementById('password')
+  const showPassword = document.querySelector('.fa-eye-slash')
+  const hidePassword = document.querySelector('.fa-eye')
+
+  showPassword.addEventListener('click', (e) => {
+    passwordInput.type = 'text'
+    showPassword.classList.add('d-none')
+    hidePassword.classList.remove('d-none')
+  })
+
+  hidePassword.addEventListener('click', (e) => {
+    passwordInput.type = 'password'
+    hidePassword.classList.add('d-none')
+    showPassword.classList.remove('d-none')
+  })
+</script>
