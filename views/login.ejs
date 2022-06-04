@@ -40,9 +40,10 @@
               id="password"
               name="password"
               placeholder="Enter your password"
-              value="123123"
+              value=""
               required
             />
+            <!-- 123123 -->
             <i
               class="fa fa-key position-absolute"
               style="top: 50%; transform: translatey(-50%); left: 2px"
@@ -83,41 +84,41 @@
 </div>
 
 <script>
-  const email = document.getElementById('email')
-  const password = document.getElementById('password')
+  const emailInput = document.getElementById('email')
+  const passwordInput = document.getElementById('password')
   const errorMessage = document.querySelectorAll('.error-message')
   const [emailErrorMessage, passwordErrorMessage] = errorMessage
 
-  password.addEventListener('click', (e) => {
-    passwordErrorMessage.textContent = ''
+  passwordInput.addEventListener('click', () => {
+    clearErrorMessage(passwordErrorMessage)
   })
 
   checkEmailPattern('input')
   checkEmailPattern('blur')
   checkEmailPattern('click')
 
-  function checkEmailPattern(event) {
-    email.addEventListener(event, (e) => {
-      if (event === 'click') return checkByErrorMessageContent(e)
-      responseToEmailPattern(e)
+  function checkEmailPattern(clientEvent) {
+    emailInput.addEventListener(clientEvent, (event) => {
+      if (clientEvent === 'click') return checkByErrorMessageContent(event)
+      responseToEmailPattern(event)
     })
   }
 
-  function checkByErrorMessageContent(e) {
+  function checkByErrorMessageContent(event) {
     if (
       emailErrorMessage.textContent === 'correct pattern' ||
       emailErrorMessage.textContent === 'incorrect pattern'
     ) {
-      responseToEmailPattern(e)
+      responseToEmailPattern(event)
     } else {
-      clearEmailErrorMessage()
+      clearErrorMessage(emailErrorMessage)
     }
   }
 
-  function responseToEmailPattern(e) {
-    const regex = new RegExp(e.target.pattern)
+  function responseToEmailPattern(event) {
+    const regex = new RegExp(event.target.pattern)
 
-    if (isPatternCheched(regex, e.target.value)) {
+    if (isPatternCheched(regex, event.target.value)) {
       emailErrorMessage.textContent = 'correct pattern'
       emailErrorMessage.classList.add('text-info')
     } else {
@@ -130,7 +131,7 @@
     return regex.test(inputValue)
   }
 
-  function clearEmailErrorMessage() {
-    emailErrorMessage.textContent = ''
+  function clearErrorMessage(errorMessageDOM) {
+    errorMessageDOM.textContent = ''
   }
 </script>
