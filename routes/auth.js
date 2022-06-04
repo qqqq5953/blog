@@ -27,7 +27,7 @@ router.get('/signup', (req, res, next) => {
   })
 })
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', async (req, res) => {
   const userName = req.body.userName
   const email = req.body.email
   const password = req.body.password
@@ -42,57 +42,78 @@ router.post('/signup', (req, res, next) => {
     return
   }
 
-  fireAuth
-    .createUserWithEmailAndPassword(email, password)
-    .then((UserCredential) => {
-      const usersRef = firebaseAdminDb.ref('users')
-      const userRef = usersRef.push()
-      const key = userRef.key
-      const uid = UserCredential.user.uid
-      const userInfo = {
-        userName,
-        email,
-        uid
-      }
-      usersRef.child(uid).set(userInfo)
-      res.redirect('/auth/login')
-    })
-    .catch((error) => {
-      const errorCodeContent = 'auth/weak-password'
-      sendErrorMessage(req, error, errorCodeContent)
-      res.redirect('/auth/signup')
-    })
+  try {
+    const UserCredential = await fireAuth.createUserWithEmailAndPassword(
+      email,
+      password
+    )
+
+    const usersRef = firebaseAdminDb.ref('users')
+    const userRef = usersRef.push()
+    const key = userRef.key
+    const uid = UserCredential.user.uid
+    const userInfo = {
+      userName,
+      email,
+      uid
+    }
+    usersRef.child(uid).set(userInfo)
+    res.redirect('/auth/login')
+  } catch (error) {
+    const errorCodeContent = 'auth/weak-password'
+    sendErrorMessage(req, error, errorCodeContent)
+    res.redirect('/auth/signup')
+  }
+
+  // fireAuth
+  //   .createUserWithEmailAndPassword(email, password)
+  //   .then((UserCredential) => {
+  //     const usersRef = firebaseAdminDb.ref('users')
+  //     const userRef = usersRef.push()
+  //     const key = userRef.key
+  //     const uid = UserCredential.user.uid
+  //     const userInfo = {
+  //       userName,
+  //       email,
+  //       uid
+  //     }
+  //     usersRef.child(uid).set(userInfo)
+  //     res.redirect('/auth/login')
+  //   })
+  //   .catch((error) => {
+  //     const errorCodeContent = 'auth/weak-password'
+  //     sendErrorMessage(req, error, errorCodeContent)
+  //     res.redirect('/auth/signup')
+  //   })
 })
 
 router.get('/login', function (req, res, next) {
   res.render('login', {
     title: 'Express',
+    invalidEmail: req.flash('invalidEmail'),
     emailError: req.flash('emailError'),
     passwordError: req.flash('passwordError')
   })
 })
 
-router.post('/login', function (req, res, next) {
+router.post('/login', async (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
-  firebase
-    .auth()
-    .signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      // login success
-      const user = userCredential.user
-      req.session.uid = user.uid
-      // req.session.email = user.email
-
-      res.redirect('/dashboard')
-      // res.redirect(`/dashboard/archives`)
-    })
-    .catch((error) => {
-      const errorCodeContent = 'auth/wrong-password'
-      sendErrorMessage(req, error, errorCodeContent)
-      res.redirect('/auth/login')
-    })
+  try {
+    const userCredential = await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+    const user = userCredential.user
+    req.session.uid = user.uid
+    res.redirect('/dashboard')
+    // res.redirect(`/dashboard/archives`)
+  } catch (error) {
+    const errorCodeContent = 'auth/wrong-password'
+    sendErrorMessage(req, error, errorCodeContent)
+    req.flash('invalidEmail', email)
+    res.redirect('/auth/login')
+  }
 })
 
 module.exports = router
