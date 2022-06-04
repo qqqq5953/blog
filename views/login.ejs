@@ -28,9 +28,7 @@
               aria-hidden="true"
             ></i>
           </div>
-          <small class="form-text text-primary error-message"
-            ><%= emailError %>
-          </small>
+          <small class="form-text text-primary"><%= emailError %> </small>
         </div>
         <div class="form-group">
           <label class="font-weight-bold mb-0" for="password">Password</label>
@@ -60,9 +58,7 @@
               <i class="fa fa-eye d-none" aria-hidden="true"></i>
             </button>
           </div>
-          <small class="form-text text-primary error-message"
-            ><%= passwordError %>
-          </small>
+          <small class="form-text text-primary"><%= passwordError %> </small>
         </div>
         <div class="form-group d-flex justify-content-between">
           <div class="form-check">
@@ -94,59 +90,8 @@
 </div>
 
 <script>
-  // 驗證 email 格式
-  const emailInput = document.getElementById('email')
-  const passwordInput = document.getElementById('password')
-  const errorMessage = document.querySelectorAll('.error-message')
-  const [emailErrorMessage, passwordErrorMessage] = errorMessage
-
-  passwordInput.addEventListener('click', () => {
-    clearErrorMessage(passwordErrorMessage)
-  })
-
-  checkEmailPattern('input')
-  checkEmailPattern('blur')
-  checkEmailPattern('click')
-
-  function checkEmailPattern(clientEvent) {
-    emailInput.addEventListener(clientEvent, (event) => {
-      if (clientEvent === 'click') return checkByErrorMessageContent(event)
-      responseToEmailPattern(event)
-    })
-  }
-
-  function checkByErrorMessageContent(event) {
-    if (
-      emailErrorMessage.textContent === 'correct pattern' ||
-      emailErrorMessage.textContent === 'incorrect pattern'
-    ) {
-      responseToEmailPattern(event)
-    } else {
-      clearErrorMessage(emailErrorMessage)
-    }
-  }
-
-  function responseToEmailPattern(event) {
-    const regex = new RegExp(event.target.pattern)
-
-    if (isPatternCheched(regex, event.target.value)) {
-      emailErrorMessage.textContent = 'correct pattern'
-      emailErrorMessage.classList.add('text-info')
-    } else {
-      emailErrorMessage.textContent = 'incorrect pattern'
-      emailErrorMessage.classList.remove('text-info')
-    }
-  }
-
-  function isPatternCheched(regex, inputValue) {
-    return regex.test(inputValue)
-  }
-
-  function clearErrorMessage(errorMessageDOM) {
-    errorMessageDOM.textContent = ''
-  }
-
   // 隱藏或顯示密碼
+  const passwordInput = document.getElementById('password')
   const showPassword = document.querySelector('.fa-eye-slash')
   const hidePassword = document.querySelector('.fa-eye')
 

@@ -32,15 +32,14 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1" class="font-weight-bold mb-0"
-            >Email</label
-          >
+          <label for="email" class="font-weight-bold mb-0">Email</label>
           <div class="position-relative">
             <input
               type="email"
               class="form-control border-top-0 border-left-0 border-right-0 rounded-0 py-4 pr-4"
               style="padding-left: 2.5rem"
-              id="exampleInputEmail1"
+              pattern="^\w[\w_.]*@.+\.com(\.\w+)?$"
+              id="email"
               name="email"
               aria-describedby="emailHelp"
               placeholder="請輸入 email"
@@ -53,7 +52,9 @@
               aria-hidden="true"
             ></i>
           </div>
-          <small class="form-text text-primary"><%= emailError %> </small>
+          <small class="form-text text-primary error-message"
+            ><%= emailError %>
+          </small>
         </div>
         <div class="form-group">
           <label for="password" class="font-weight-bold mb-0">Password</label>
@@ -82,7 +83,9 @@
               <i class="fa fa-eye d-none" aria-hidden="true"></i>
             </button>
           </div>
-          <small class="form-text text-primary"><%= passwordError %> </small>
+          <small class="form-text text-primary error-message"
+            ><%= passwordError %>
+          </small>
         </div>
         <div class="form-group">
           <label for="confirm_password" class="font-weight-bold mb-0"
@@ -127,8 +130,59 @@
 </div>
 
 <script>
-  // 隱藏或顯示密碼
+  // 驗證 email 格式
+  const emailInput = document.getElementById('email')
   const passwordInput = document.getElementById('password')
+  const errorMessage = document.querySelectorAll('.error-message')
+  const [emailErrorMessage, passwordErrorMessage] = errorMessage
+
+  passwordInput.addEventListener('click', () => {
+    clearErrorMessage(passwordErrorMessage)
+  })
+
+  checkEmailPattern('input')
+  checkEmailPattern('blur')
+  checkEmailPattern('click')
+
+  function checkEmailPattern(clientEvent) {
+    emailInput.addEventListener(clientEvent, (event) => {
+      if (clientEvent === 'click') return checkByErrorMessageContent(event)
+      responseToEmailPattern(event)
+    })
+  }
+
+  function checkByErrorMessageContent(event) {
+    if (
+      emailErrorMessage.textContent === 'correct pattern' ||
+      emailErrorMessage.textContent === 'incorrect pattern'
+    ) {
+      responseToEmailPattern(event)
+    } else {
+      clearErrorMessage(emailErrorMessage)
+    }
+  }
+
+  function responseToEmailPattern(event) {
+    const regex = new RegExp(event.target.pattern)
+
+    if (isPatternCheched(regex, event.target.value)) {
+      emailErrorMessage.textContent = 'correct pattern'
+      emailErrorMessage.classList.add('text-info')
+    } else {
+      emailErrorMessage.textContent = 'incorrect pattern'
+      emailErrorMessage.classList.remove('text-info')
+    }
+  }
+
+  function isPatternCheched(regex, inputValue) {
+    return regex.test(inputValue)
+  }
+
+  function clearErrorMessage(errorMessageDOM) {
+    errorMessageDOM.textContent = ''
+  }
+
+  // 隱藏或顯示密碼
   const showPassword = document.querySelector('.fa-eye-slash')
   const hidePassword = document.querySelector('.fa-eye')
 
