@@ -1,7 +1,7 @@
 <% extend('./layouts/layout')%>
 
 <nav aria-label="breadcrumb" class="row">
-  <ol class="breadcrumb">
+  <ol class="breadcrumb bg-transparent">
     <li class="breadcrumb-item">
       <a href="/" class="">Home</a>
     </li>
@@ -10,14 +10,17 @@
         ><%= categories[article.category].name || "未分類" %></a
       >
     </li>
-    <li class="breadcrumb-item pl-0 text-secondary" aria-current="page">
+    <li
+      class="breadcrumb-item pl-0 text-secondary d-none d-sm-block"
+      aria-current="page"
+    >
       <%- article.title %>
     </li>
   </ol>
 </nav>
 
 <div class="row justify-content-center">
-  <div class="col-md-9">
+  <div class="col-md-10">
     <!-- artical header -->
     <h1 class="text-dark"><%- article.title %></h1>
     <div class="d-flex small py-2">
