@@ -48,7 +48,11 @@
       .form-control {
         transition: all 0.3s ease-in-out;
         color: #777;
-        border-bottom: 1px solid #777 !important;
+        border-bottom: 1px solid rgb(206, 206, 206) !important;
+      }
+
+      .form-control::placeholder {
+        color: rgb(187, 187, 187);
       }
 
       .form-control:focus {
@@ -60,6 +64,7 @@
       .form-control + .fa {
         transition: all 0.3s ease-in-out;
       }
+
       .form-control:focus + .fa {
         transform: scale(1.02) translatey(-40%) !important;
       }
