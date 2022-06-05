@@ -107,6 +107,14 @@
               style="top: 50%; transform: translatey(-50%); left: 12px"
               aria-hidden="true"
             ></i>
+            <button
+              type="button"
+              class="position-absolute border-0 bg-transparent"
+              style="top: 50%; transform: translatey(-50%); right: 0"
+            >
+              <i class="fa fa-eye-slash" aria-hidden="true"></i>
+              <i class="fa fa-eye d-none" aria-hidden="true"></i>
+            </button>
           </div>
           <small class="form-text text-primary"
             ><%= confirmPasswordError %>
@@ -183,18 +191,34 @@
   }
 
   // 隱藏或顯示密碼
-  const showPassword = document.querySelector('.fa-eye-slash')
-  const hidePassword = document.querySelector('.fa-eye')
+  const confirmPasswordInput = document.getElementById('confirm_password')
+  const showPasswords = document.querySelectorAll('.fa-eye-slash')
+  const hidePasswords = document.querySelectorAll('.fa-eye')
 
-  showPassword.addEventListener('click', (e) => {
-    passwordInput.type = 'text'
-    showPassword.classList.add('d-none')
-    hidePassword.classList.remove('d-none')
-  })
+  const [showPassword, showConfirmPassword] = showPasswords
+  const [hidePassword, hideConfirmPassword] = hidePasswords
 
-  hidePassword.addEventListener('click', (e) => {
-    passwordInput.type = 'password'
-    hidePassword.classList.add('d-none')
-    showPassword.classList.remove('d-none')
-  })
+  togglePasswordByElements(showPassword, hidePassword, passwordInput)
+  togglePasswordByElements(
+    showConfirmPassword,
+    hideConfirmPassword,
+    confirmPasswordInput
+  )
+
+  function togglePasswordByElements(showElement, hideElement, input, type) {
+    showElement.addEventListener('click', (e) => {
+      input.type = 'text'
+      togglePassword(showElement, hideElement)
+    })
+
+    hideElement.addEventListener('click', (e) => {
+      input.type = 'password'
+      togglePassword(showElement, hideElement)
+    })
+  }
+
+  function togglePassword(showElement, hideElement) {
+    showElement.classList.toggle('d-none')
+    hideElement.classList.toggle('d-none')
+  }
 </script>
