@@ -23,7 +23,7 @@
   <div class="col-md-10">
     <!-- artical header -->
     <h1 class="text-dark"><%- article.title %></h1>
-    <div class="d-flex small py-2">
+    <div class="d-flex small py-3">
       <div class="mr-2">
         <i class="fa fa-user-o" aria-hidden="true"></i> 卡斯伯
       </div>
@@ -31,12 +31,12 @@
         <span class="fa fa-clock-o"></span>
         <%- article.updateTime %>
       </div>
-      <div class="text-primary">
+      <div class="text-info">
         <i class="fa fa-tag" aria-hidden="true"></i>
         <span> <%= categories[article.category].name || "未分類" %></span>
       </div>
     </div>
-    <article class="text-dark post mb-4">
+    <article class="text-dark post mb-4 border-top">
       <p><%- article.content %></p>
     </article>
     <!-- 留言 -->
@@ -72,3 +72,9 @@
     </div>
   </div>
 </div>
+
+<style>
+  a:not(.breadcrumb-item > a) {
+    color: #369;
+  }
+</style>
