@@ -29,7 +29,7 @@ app.use(
     secret: 'keyboard cat',
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 1000 * 1000 }
+    cookie: { maxAge: 60 * 60 * 1000 } // one hour
   })
 )
 app.use(flash())
@@ -39,15 +39,15 @@ const authCheck = (req, res, next) => {
   const uid = req.session.uid
 
   if (uid === process.env.FIREBASE_USER_UID) return next()
-  if (uid && uid !== process.env.FIREBASE_USER_UID)
-    req.flash('emailError', '非此 app 用戶')
+  // if (uid && uid !== process.env.FIREBASE_USER_UID)
+  //   req.flash('emailError', '非此 app 用戶')
 
   res.redirect('/auth/login')
 }
 
 // routes
 app.use('/', indexRouter)
-app.use('/dashboard', authCheck, dashboard)
+app.use('/dashboard', dashboard)
 app.use('/auth', auth)
 
 // catch 404 and forward to error handler

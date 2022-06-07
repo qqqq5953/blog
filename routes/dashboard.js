@@ -3,7 +3,7 @@ const router = express.Router()
 const firebaseAdminDb = require('../connection/firebase_admin')
 const striptags = require('striptags')
 const pagination = require('../modules/pagination')
-let userName = 'Andy'
+let userName = ''
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
@@ -12,13 +12,23 @@ const usersRef = firebaseAdminDb.ref('/users/')
 router.get('/', (req, res) => {
   const getUserName = async () => {
     const uid = req.session.uid
-    if (!uid) return (userName = 'Andy')
+    console.log('uid', uid)
+
+    if (!uid) {
+      return (userName = 'no user')
+    }
+
     const snapshot = await usersRef.child(uid).once('value')
     userName = snapshot.val().userName
   }
 
   const renderData = async () => {
     await getUserName()
+
+    if (userName === 'no user') {
+      return res.redirect('/auth/login')
+    }
+
     res.render('dashboard/index', {
       userName
     })
@@ -78,8 +88,11 @@ router
     })
   })
   .post((req, res) => {
+    console.log('post start')
+    const uid = req.session.uid
+    console.log('article uid', uid)
     const data = req.body
-    const articleRef = articlesRef.push()
+    const articleRef = articlesRef.child(uid).push()
     const updateTime = () => {
       const today = new Date()
       const dd = String(today.getDate()).padStart(2, '0')

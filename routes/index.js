@@ -8,7 +8,7 @@ const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
 
 /* GET home page. */
-router.get('/', function (req, res) {
+router.get('/', async (req, res) => {
   req.session.destroy()
 
   const getCategories = require('../modules/getCategories')
