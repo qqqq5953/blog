@@ -90,11 +90,10 @@ router
     })
   })
   .post((req, res) => {
-    console.log('post start')
-    const uid = req.session.uid
-    console.log('article uid', uid)
     const data = req.body
-    const articleRef = articlesRef.child(uid).push()
+    const uid = req.session.uid
+    const userNewArticleRefs = articlesRef.child(uid).push()
+
     const updateTime = () => {
       const today = new Date()
       const dd = String(today.getDate()).padStart(2, '0')
@@ -105,8 +104,12 @@ router
 
     if (data.title === '' || data.content === '') return
 
-    const newArticle = { ...data, id: articleRef.key, updateTime: updateTime() }
-    articleRef.set(newArticle).then(() => {
+    const newArticle = {
+      ...data,
+      id: userNewArticleRefs.key,
+      updateTime: updateTime()
+    }
+    userNewArticleRefs.set(newArticle).then(() => {
       req.flash('info', { title: newArticle.title, message: '新增成功' })
       res.redirect('/dashboard/article/create')
     })
@@ -115,8 +118,10 @@ router
 router.get('/article/:id', (req, res) => {
   const info = req.flash('info')[0]
   const id = req.params.id
+  const uid = req.session.uid
+  const userArticleRefs = articlesRef.child(uid)
+  const articleSnapshot = userArticleRefs.child(id).once('value')
   const categoriesSnapshot = categoriesRef.once('value')
-  const articleSnapshot = articlesRef.child(id).once('value')
 
   Promise.all([categoriesSnapshot, articleSnapshot]).then((snapshots) => {
     const categories = snapshots[0].val()
@@ -133,8 +138,10 @@ router.get('/article/:id', (req, res) => {
 
 router.get('/article/preview/:id', (req, res) => {
   const id = req.params.id
+  const uid = req.session.uid
+  const userArticleRefs = articlesRef.child(uid)
+  const articlesShapshot = userArticleRefs.child(id).once('value')
   const categoriesShapshot = categoriesRef.once('value')
-  const articlesShapshot = articlesRef.child(id).once('value')
 
   Promise.all([categoriesShapshot, articlesShapshot]).then((snapshots) => {
     const categories = snapshots[0].val()
@@ -147,8 +154,10 @@ router.get('/article/preview/:id', (req, res) => {
 router.post('/article/update/:id', (req, res) => {
   const id = req.params.id
   const data = req.body
+  const uid = req.session.uid
+  const userArticleRefs = articlesRef.child(uid)
 
-  articlesRef
+  userArticleRefs
     .child(id)
     .update(data)
     .then(() => {
@@ -159,15 +168,17 @@ router.post('/article/update/:id', (req, res) => {
 
 router.post('/article/delete/:id', (req, res) => {
   const id = req.params.id
+  const uid = req.session.uid
+  const userArticleRefs = articlesRef.child(uid)
 
   const getDeleteArticle = async () => {
-    const snapshot = await articlesRef.child(id).once('value')
+    const snapshot = await userArticleRefs.child(id).once('value')
     const deletedArticle = snapshot.val()
     req.flash('delete', { ...deletedArticle, message: '刪除成功' })
   }
 
   const deleteArticle = async () => {
-    articlesRef.child(id).remove()
+    userArticleRefs.child(id).remove()
   }
 
   const processRequest = async () => {
