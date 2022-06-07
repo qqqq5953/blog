@@ -38,6 +38,8 @@ router.get('/', (req, res) => {
 })
 
 router.get('/archives', (req, res) => {
+  const uid = req.session.uid
+  const userArticleRefs = articlesRef.child(uid)
   const articleStatus = req.query.status || 'public'
   const deletedArticle = req.flash('delete')[0]
 
@@ -48,7 +50,7 @@ router.get('/archives', (req, res) => {
   const renderArticles = async () => {
     const categories = await getCategories(categoriesRef)
     const articles = await sortAllArticlesByUpdateTime(
-      articlesRef,
+      userArticleRefs,
       articleStatus
     )
 
