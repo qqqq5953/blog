@@ -77,7 +77,13 @@
             <span class="text-white mr-2 d-none d-md-block">
               Hello, <%= userName %>
             </span>
-            <a class="nav-item nav-link" href="/">登出</a>
+            <form action="/dashboard/logout" method="post">
+              <input
+                class="nav-item nav-link bg-transparent border-0 font-weight-bold"
+                type="submit"
+                value="登出"
+              />
+            </form>
           </div>
         </div>
       </div>

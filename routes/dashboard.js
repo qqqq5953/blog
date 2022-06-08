@@ -265,4 +265,9 @@ router.post('/categories/delete/:id', (req, res) => {
   res.redirect('/dashboard/categories')
 })
 
+router.post('/logout', (req, res) => {
+  req.session.destroy()
+  res.redirect('/')
+})
+
 module.exports = router

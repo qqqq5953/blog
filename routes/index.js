@@ -9,8 +9,6 @@ const articlesRef = firebaseAdminDb.ref('/articles/')
 
 /* GET home page. */
 router.get('/', async (req, res) => {
-  req.session.destroy()
-
   const getCategories = require('../modules/getCategories')
 
   const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
