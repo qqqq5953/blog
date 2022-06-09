@@ -1,6 +1,6 @@
-const sortAllArticlesByUpdateTime = async (userArticleRefs, articleStatus) => {
+const sortAllArticlesByUpdateTime = async (userArticlesRefs, articleStatus) => {
   const articles = []
-  const articlesSnapshot = await userArticleRefs
+  const articlesSnapshot = await userArticlesRefs
     .orderByChild('updateTime')
     .once('value')
   articlesSnapshot.forEach((childSnapshot) => {

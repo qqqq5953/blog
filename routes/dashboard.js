@@ -39,7 +39,7 @@ router.get('/', (req, res) => {
 
 router.get('/archives', (req, res) => {
   const uid = req.session.uid
-  const userArticleRefs = articlesRef.child(uid)
+  const userArticlesRefs = articlesRef.child(uid)
   const articleStatus = req.query.status || 'public'
   const deletedArticle = req.flash('delete')[0]
 
@@ -50,7 +50,7 @@ router.get('/archives', (req, res) => {
   const renderArticles = async () => {
     const categories = await getCategories(categoriesRef)
     const articles = await sortAllArticlesByUpdateTime(
-      userArticleRefs,
+      userArticlesRefs,
       articleStatus
     )
 
@@ -107,7 +107,7 @@ router
     const newArticle = {
       ...data,
       id: userNewArticleRefs.key,
-      updateTime: updateTime()
+      updateTime: Date.now()
     }
     userNewArticleRefs.set(newArticle).then(() => {
       req.flash('info', { title: newArticle.title, message: '新增成功' })

@@ -9,10 +9,6 @@ const articlesRef = firebaseAdminDb.ref('/articles/')
 
 /* GET home page. */
 router.get('/', async (req, res) => {
-  const getCategories = require('../modules/getCategories')
-
-  const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
-
   const getCategoryId = async (categoryQuery) => {
     const categorySnapshot = await categoriesRef
       .orderByChild('name')
@@ -44,12 +40,34 @@ router.get('/', async (req, res) => {
       if (!categoryId) return res.redirect('/')
       articles = await getArticlesByCategoryId(categoryId)
     } else {
-      articles = await sortAllArticlesByUpdateTime(
-        articlesRef,
-        (articleStatus = 'public')
-      )
+      const changeDateFormat = require('../modules/changeDateFormat')
+      const articlesOfUsersSnapshot = await articlesRef.once('value')
+      const usersId = Object.keys(articlesOfUsersSnapshot.val())
+
+      // 呈現所有文章
+      for (let i = 0; i < usersId.length; i++) {
+        const userArticlesRefs = articlesRef.child(usersId[i])
+        const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
+        const userArticles = await sortAllArticlesByUpdateTime(
+          userArticlesRefs,
+          (articleStatus = 'public')
+        )
+        articles.push(...userArticles)
+      }
+
+      // 日期排序由近到遠
+      articles.sort((a, b) => {
+        return b.updateTime - a.updateTime
+      })
+
+      // unix stamp 轉成 yyyy-mm-dd 格式
+      articles.forEach((item) => {
+        // console.log(item.updateTime)
+        item.updateTime = changeDateFormat(item.updateTime)
+      })
     }
 
+    const getCategories = require('../modules/getCategories')
     const categories = await getCategories(categoriesRef)
     const pageNumber = parseInt(req.query.page) || 1
     const { paginatedArticles, page } = pagination(articles, pageNumber)
