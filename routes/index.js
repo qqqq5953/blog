@@ -21,13 +21,40 @@ router.get('/', async (req, res) => {
 
   const getArticlesByCategoryId = async (categoryId) => {
     const articles = []
-    const articlesSnapshot = await articlesRef
-      .orderByChild('category')
-      .equalTo(categoryId)
-      .once('value')
-    articlesSnapshot.forEach((childSnapshot) => {
-      articles.push(childSnapshot.val())
-    })
+    const articlesOfUsersSnapshot = await articlesRef.once('value')
+    const usersId = Object.keys(articlesOfUsersSnapshot.val())
+
+    for (let i = 0; i < usersId.length; i++) {
+      const userArticlesRefs = await articlesRef
+        .child(usersId[i])
+        .orderByChild('category')
+        .equalTo(categoryId)
+        .once('value')
+
+      if (userArticlesRefs.val() == null) continue
+
+      const userArticles = Object.values(userArticlesRefs.val())
+      articles.push(...userArticles)
+    }
+    return articles
+  }
+
+  const getAllArticles = async () => {
+    const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
+
+    const articlesOfUsersSnapshot = await articlesRef.once('value')
+    const usersId = Object.keys(articlesOfUsersSnapshot.val())
+
+    // 呈現所有文章
+    const articles = []
+    for (let i = 0; i < usersId.length; i++) {
+      const userArticlesRefs = articlesRef.child(usersId[i])
+      const userArticles = await sortAllArticlesByUpdateTime(
+        userArticlesRefs,
+        'public'
+      )
+      articles.push(...userArticles)
+    }
     return articles
   }
 
@@ -40,32 +67,20 @@ router.get('/', async (req, res) => {
       if (!categoryId) return res.redirect('/')
       articles = await getArticlesByCategoryId(categoryId)
     } else {
-      const changeDateFormat = require('../modules/changeDateFormat')
-      const articlesOfUsersSnapshot = await articlesRef.once('value')
-      const usersId = Object.keys(articlesOfUsersSnapshot.val())
-
-      // 呈現所有文章
-      for (let i = 0; i < usersId.length; i++) {
-        const userArticlesRefs = articlesRef.child(usersId[i])
-        const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
-        const userArticles = await sortAllArticlesByUpdateTime(
-          userArticlesRefs,
-          (articleStatus = 'public')
-        )
-        articles.push(...userArticles)
-      }
-
-      // 日期排序由近到遠
-      articles.sort((a, b) => {
-        return b.updateTime - a.updateTime
-      })
-
-      // unix stamp 轉成 yyyy-mm-dd 格式
-      articles.forEach((item) => {
-        // console.log(item.updateTime)
-        item.updateTime = changeDateFormat(item.updateTime)
-      })
+      articles = await getAllArticles()
     }
+
+    // 日期排序由近到遠
+    articles.sort((a, b) => {
+      return b.updateTime - a.updateTime
+    })
+
+    // unix stamp 轉成 yyyy-mm-dd 格式
+    const changeDateFormat = require('../modules/changeDateFormat')
+    articles.forEach((item) => {
+      console.log(item.updateTime)
+      item.updateTime = changeDateFormat(item.updateTime)
+    })
 
     const getCategories = require('../modules/getCategories')
     const categories = await getCategories(categoriesRef)
