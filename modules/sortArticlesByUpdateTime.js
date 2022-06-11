@@ -1,4 +1,4 @@
-const sortAllArticlesByUpdateTime = async (userArticlesRefs, articleStatus) => {
+const sortArticlesByUpdateTime = async (userArticlesRefs, articleStatus) => {
   const articles = []
   const articlesSnapshot = await userArticlesRefs
     .orderByChild('updateTime')
@@ -11,4 +11,4 @@ const sortAllArticlesByUpdateTime = async (userArticlesRefs, articleStatus) => {
   return articles.reverse()
 }
 
-module.exports = sortAllArticlesByUpdateTime
+module.exports = sortArticlesByUpdateTime

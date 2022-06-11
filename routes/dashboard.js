@@ -45,11 +45,11 @@ router.get('/archives', (req, res) => {
 
   const getCategories = require('../modules/getCategories')
 
-  const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
+  const sortArticlesByUpdateTime = require('../modules/sortArticlesByUpdateTime')
 
   const renderArticles = async () => {
     const categories = await getCategories(categoriesRef)
-    const articles = await sortAllArticlesByUpdateTime(
+    const articles = await sortArticlesByUpdateTime(
       userArticlesRefs,
       articleStatus
     )

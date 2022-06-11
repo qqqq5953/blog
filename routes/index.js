@@ -39,9 +39,18 @@ router.get('/', async (req, res) => {
     return articles
   }
 
-  const getAllArticles = async () => {
-    const sortAllArticlesByUpdateTime = require('../modules/sortAllArticlesByUpdateTime')
+  const getSingleUserArticles = async (userArticlesRefs, articleStatus) => {
+    const articles = []
+    const articlesSnapshot = await userArticlesRefs.once('value')
+    articlesSnapshot.forEach((childSnapshot) => {
+      if (articleStatus === childSnapshot.val().status) {
+        articles.push(childSnapshot.val())
+      }
+    })
+    return articles
+  }
 
+  const getAllArticles = async () => {
     const articlesOfUsersSnapshot = await articlesRef.once('value')
     const usersId = Object.keys(articlesOfUsersSnapshot.val())
 
@@ -49,7 +58,7 @@ router.get('/', async (req, res) => {
     const articles = []
     for (let i = 0; i < usersId.length; i++) {
       const userArticlesRefs = articlesRef.child(usersId[i])
-      const userArticles = await sortAllArticlesByUpdateTime(
+      const userArticles = await getSingleUserArticles(
         userArticlesRefs,
         'public'
       )
