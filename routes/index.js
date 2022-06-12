@@ -6,6 +6,7 @@ const pagination = require('../modules/pagination')
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
+let articlesForFilteringCategories = []
 
 /* GET home page. */
 router.get('/', async (req, res) => {
@@ -31,7 +32,9 @@ router.get('/', async (req, res) => {
         .equalTo(categoryId)
         .once('value')
 
-      if (userArticlesRefs.val() == null) continue
+      if (userArticlesRefs.val() == null) {
+        continue
+      }
 
       const userArticles = Object.values(userArticlesRefs.val())
       articles.push(...userArticles)
@@ -77,6 +80,7 @@ router.get('/', async (req, res) => {
       articles = await getArticlesByCategoryId(categoryId)
     } else {
       articles = await getAllArticles()
+      articlesForFilteringCategories = await getAllArticles()
     }
 
     // 日期排序由近到遠
@@ -91,15 +95,18 @@ router.get('/', async (req, res) => {
       item.updateTime = changeDateFormat(item.updateTime)
     })
 
-    const getCategories = require('../modules/getCategories')
-    const categories = await getCategories(categoriesRef)
+    const getCategoriesInUse = require('../modules/getCategoriesInUse')
+    const categoriesInUse = await getCategoriesInUse(
+      categoriesRef,
+      articlesForFilteringCategories
+    )
     const pageNumber = parseInt(req.query.page) || 1
     const { paginatedArticles, page } = pagination(articles, pageNumber)
 
     res.render('index', {
       articles: paginatedArticles,
       categoryQueryString: categoryQuery ? `category=${categoryQuery}&` : '',
-      categories,
+      categories: categoriesInUse,
       originalUrl: req.originalUrl.split('?')[0],
       page,
       striptags

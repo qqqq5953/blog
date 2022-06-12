@@ -43,12 +43,12 @@ router.get('/archives', (req, res) => {
   const articleStatus = req.query.status || 'public'
   const deletedArticle = req.flash('delete')[0]
 
-  const getCategories = require('../modules/getCategories')
+  const getCategoriesInUse = require('../modules/getCategoriesInUse')
 
   const sortArticlesByUpdateTime = require('../modules/sortArticlesByUpdateTime')
 
   const renderArticles = async () => {
-    const categories = await getCategories(categoriesRef)
+    const categories = await getCategoriesInUse(categoriesRef)
     const articles = await sortArticlesByUpdateTime(
       userArticlesRefs,
       articleStatus
