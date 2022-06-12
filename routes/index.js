@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
       .equalTo(categoryQuery)
       .once('value')
 
+    // 避免 query value 被輸入不存在的 categoryQuery
     if (categorySnapshot.val() == null) return
     return Object.values(categorySnapshot.val())[0].id
   }
