@@ -1,3 +1,5 @@
+<% if (!uid){var uid = null} %> 
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -62,16 +64,28 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ml-auto">
-          <a class="nav-item nav-link" href="/auth/login"
-            >登入 <span class="sr-only">(current)</span></a
-          >
+        <div class="navbar-nav ml-auto">         
           <a class="nav-item nav-link" href="/auth/signup"
             >註冊 <span class="sr-only">(current)</span></a
           >
+          <% if(!uid){ %> 
+            <a class="nav-item nav-link" href="/auth/login"
+              >登入 <span class="sr-only">(current)</span></a
+            >
+          <% }else{ %> 
+            <div class="dropdown">
+              <button class="nav-item nav-link bg-transparent border-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false"
+                ><i class="fa fa-user-circle-o" aria-hidden="true"></i></button
+              >
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/dashboard">Dashboard</a>
+              </div>
+            </div>
+          <% } %> 
         </div>
       </div>
     </nav>
+
     <main class="container-fluid container-sm py-4 px-5 px-sm-0 flex-grow-1"><%- content %></main>
     <footer class="bg-secondary text-white py-4 footer">
       <div class="container">

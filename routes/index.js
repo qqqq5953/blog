@@ -111,6 +111,7 @@ router.get('/', async (req, res) => {
       page,
       striptags,
       query: req.query,
+      uid: req.session.uid,
       originalUrl: req.originalUrl.split('?')[0] //pagination 用
     })
   }

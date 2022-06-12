@@ -107,8 +107,7 @@ router.post('/login', async (req, res) => {
       .signInWithEmailAndPassword(email, password)
     const user = userCredential.user
     req.session.uid = user.uid
-    res.redirect('/dashboard')
-    // res.redirect(`/dashboard/archives`)
+    res.redirect('/')
   } catch (error) {
     const errorCodeContent = 'auth/wrong-password'
     sendErrorMessage(req, error, errorCodeContent)
