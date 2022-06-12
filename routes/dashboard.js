@@ -48,11 +48,11 @@ router.get('/archives', (req, res) => {
   const sortArticlesByUpdateTime = require('../modules/sortArticlesByUpdateTime')
 
   const renderArticles = async () => {
-    const categories = await getCategoriesInUse(categoriesRef)
     const articles = await sortArticlesByUpdateTime(
       userArticlesRefs,
       articleStatus
     )
+    const categoriesInUse = await getCategoriesInUse(categoriesRef, articles)
 
     const categoryQuery = req.query.category
     const pageNumber = parseInt(req.query.page) || 1
@@ -62,7 +62,7 @@ router.get('/archives', (req, res) => {
       categoryQueryString: categoryQuery ? `category=${categoryQuery}&` : '',
       articles: paginatedArticles,
       originalUrl: req.originalUrl.split('?')[0],
-      categories,
+      categories: categoriesInUse,
       userName,
       page,
       striptags,
