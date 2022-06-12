@@ -108,9 +108,10 @@ router.get('/', async (req, res) => {
       articles: paginatedArticles,
       categoryQueryString: categoryQuery ? `category=${categoryQuery}&` : '',
       categories: categoriesInUse,
-      originalUrl: req.originalUrl.split('?')[0],
       page,
-      striptags
+      striptags,
+      query: req.query,
+      originalUrl: req.originalUrl.split('?')[0] //pagination 用
     })
   }
 

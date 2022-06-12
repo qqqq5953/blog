@@ -9,7 +9,7 @@
         <input type="hidden" name="page" value="1" />
         <button
           type="submit"
-          class="btn btn-sm btn-outline-primary mb-2 rounded-1"
+          class="btn btn-sm btn-outline-primary mb-2 rounded-1 <% if(!query.category){ %>active<% } %>"
         >
           全部
         </button>
@@ -24,7 +24,7 @@
         <input type="hidden" name="page" value="1" />
         <button
           type="submit"
-          class="btn btn-sm btn-outline-primary mb-2 rounded-1"
+          class="btn btn-sm btn-outline-primary mb-2 rounded-1 <% if(categories[prop].name === query.category){ %>active<% } %>"
           data-id="<%= prop %> "
         >
           <%= categories[prop].name %>
