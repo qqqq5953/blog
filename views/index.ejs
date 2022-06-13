@@ -46,9 +46,9 @@
           <%- articles[prop].title %>
         </h2>
         <div class="d-flex small mt-auto py-2">
-          <div class="pr-2 text-secondary">
-            <span class="fa fa-clock-o"></span>
-            <%- articles[prop].updateTime %>
+          <div class="pr-2 text-dark">
+            <span class="fa fa-user"></span>
+            <%- articles[prop].arthor %>
           </div>
           <div class="text-info">
             <i class="fa fa-tag" aria-hidden="true"></i>
@@ -65,6 +65,10 @@
           href="/post/<%- articles[prop].id %>"
           class="text-decoration-none stretched-link"
         ></a>
+        <div class="pr-2 small text-secondary text-right">
+          <span class="fa fa-clock-o"></span>
+          <%- articles[prop].updateTime %>
+        </div>
       </div>
     </div>
   </div>
@@ -107,6 +111,6 @@
   }
 
   .card:hover {
-    transform: scale(1.05);
+    transform: scale(1.025);
   }
 </style>
