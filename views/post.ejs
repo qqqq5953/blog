@@ -3,10 +3,10 @@
 <nav aria-label="breadcrumb" class="row">
   <ol class="breadcrumb bg-transparent">
     <li class="breadcrumb-item">
-      <a href="/" class="">Home</a>
+      <a href="/">Home</a>
     </li>
     <li class="breadcrumb-item pl-0 text-info" aria-current="page">
-      <a href="/?category=html&page=1" class=""
+      <a href="/?category=<%= categories[article.category].name %>&page=1"
         ><%= categories[article.category].name || "未分類" %></a
       >
     </li>
@@ -25,15 +25,15 @@
     <h1 class="text-dark"><%- article.title %></h1>
     <div class="d-flex small py-3">
       <div class="mr-2">
-        <i class="fa fa-user-o" aria-hidden="true"></i> 卡斯伯
-      </div>
-      <div class="mr-2 text-secondary">
-        <span class="fa fa-clock-o"></span>
-        <%- article.updateTime %>
+        <i class="fa fa-user-o" aria-hidden="true"></i> <%- article.arthor %>
       </div>
       <div class="text-info">
         <i class="fa fa-tag" aria-hidden="true"></i>
         <span> <%= categories[article.category].name || "未分類" %></span>
+      </div>
+      <div class="text-secondary ml-auto">
+        <span class="fa fa-clock-o"></span>
+        <%- article.updateTime %>
       </div>
     </div>
     <article class="text-dark post mb-4 border-top">

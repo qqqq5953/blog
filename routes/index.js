@@ -131,35 +131,43 @@ router.get('/', async (req, res) => {
   renderArticles()
 })
 
-router.post('/:id', async (req, res) => {
-  const id = req.params.id
-  res.redirect(`/${id}`)
-})
-
-router.get('/post/:id', function (req, res, next) {
-  let categories = {}
-  let article = {}
+router.get('/post/:id', (req, res) => {
   const id = req.params.id
 
   const getCategory = async () => {
     const snapshot = await categoriesRef.once('value')
-    categories = snapshot.val()
+    const categories = snapshot.val()
+    return categories
   }
 
   const getArticle = async () => {
-    const snapshot = await articlesRef.child(id).once('value')
-    article = snapshot.val()
+    let article = null
+    const users = await usersRef.once('value')
+    const usersKey = Object.keys(users.val())
+
+    for (let i = 0; i < usersKey.length; i++) {
+      const key = usersKey[i]
+      const snapshot = await articlesRef.child(key).once('value')
+      if (!snapshot.val()[id]) continue
+      article = snapshot.child(id).val()
+    }
+
+    return article
   }
 
   const renderData = async () => {
-    await getCategory()
-    await getArticle()
+    const categories = await getCategory()
+    const article = await getArticle()
 
     // check if article exists
-    if (!article) {
+    if (article == null) {
       res.render('error', { errorMessage: 'The article does not exist' })
       return
     }
+
+    // unix stamp 轉成 yyyy-mm-dd 格式
+    const changeDateFormat = require('../modules/changeDateFormat')
+    article.updateTime = changeDateFormat(article.updateTime)
 
     res.render('post', {
       title: 'Express',
