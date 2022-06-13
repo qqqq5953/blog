@@ -6,10 +6,21 @@ const pagination = require('../modules/pagination')
 
 const categoriesRef = firebaseAdminDb.ref('/categories/')
 const articlesRef = firebaseAdminDb.ref('/articles/')
+const usersRef = firebaseAdminDb.ref('/users/')
 let articlesForFilteringCategories = []
 
 /* GET home page. */
 router.get('/', async (req, res) => {
+  const getCurrentUserName = async () => {
+    const uid = req.session.uid
+    if (uid == null) {
+      return null
+    } else {
+      const user = await usersRef.child(uid).once('value')
+      return user.val().userName
+    }
+  }
+
   const getCategoryId = async (categoryQuery) => {
     const categorySnapshot = await categoriesRef
       .orderByChild('name')
@@ -101,6 +112,7 @@ router.get('/', async (req, res) => {
       categoriesRef,
       articlesForFilteringCategories
     )
+    const userName = await getCurrentUserName()
     const pageNumber = parseInt(req.query.page) || 1
     const { paginatedArticles, page } = pagination(articles, pageNumber)
 
@@ -110,8 +122,8 @@ router.get('/', async (req, res) => {
       categories: categoriesInUse,
       page,
       striptags,
+      userName,
       query: req.query,
-      uid: req.session.uid,
       originalUrl: req.originalUrl.split('?')[0] //pagination 用
     })
   }
