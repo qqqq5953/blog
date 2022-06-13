@@ -38,7 +38,15 @@
 
       .navbar{
         background: linear-gradient(135deg, #eb6864, rgb(76, 143, 209));
+      }
 
+      .user.dropdown-item:active{
+        background-color: transparent;
+      }
+
+      .dropdown-item:active{
+        background-color: #369;
+        color:#fff;
       }
     </style>
   </head>
@@ -79,9 +87,9 @@
               <% } %> 
             </button
             >
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton"> 
+            <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuButton"> 
               <% if(userName){ %>
-                <div class="dropdown-item text-info">Hello, 
+                <div class="user dropdown-item text-info">Hello, 
                   <span class="font-weight-bold"><%= userName %></span>
                 </div> 
               <% } %> 
