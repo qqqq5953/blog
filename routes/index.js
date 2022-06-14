@@ -11,8 +11,9 @@ let articlesForFilteringCategories = []
 
 /* GET home page. */
 router.get('/', async (req, res) => {
+  const uid = req.session.uid
+
   const getCurrentUserName = async () => {
-    const uid = req.session.uid
     if (uid == null) {
       return null
     } else {
@@ -103,7 +104,7 @@ router.get('/', async (req, res) => {
     // unix stamp 轉成 yyyy-mm-dd 格式
     const changeDateFormat = require('../modules/changeDateFormat')
     articles.forEach((item) => {
-      console.log(item.updateTime)
+      // console.log(item.updateTime)
       item.updateTime = changeDateFormat(item.updateTime)
     })
 
@@ -133,6 +134,16 @@ router.get('/', async (req, res) => {
 
 router.get('/post/:id', (req, res) => {
   const id = req.params.id
+  const uid = req.session.uid
+
+  const getCurrentUserName = async () => {
+    if (uid == null) {
+      return null
+    } else {
+      const user = await usersRef.child(uid).once('value')
+      return user.val().userName
+    }
+  }
 
   const getCategory = async () => {
     const snapshot = await categoriesRef.once('value')
@@ -158,6 +169,7 @@ router.get('/post/:id', (req, res) => {
   const renderData = async () => {
     const categories = await getCategory()
     const article = await getArticle()
+    const userName = await getCurrentUserName()
 
     // check if article exists
     if (article == null) {
@@ -173,6 +185,7 @@ router.get('/post/:id', (req, res) => {
       title: 'Express',
       categories,
       article,
+      userName,
       striptags
     })
   }

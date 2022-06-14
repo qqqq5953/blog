@@ -74,7 +74,7 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav ml-auto">         
           <a class="nav-item nav-link" href="/auth/signup"
-            >註冊 <span class="sr-only">(current)</span></a
+            >Sign up <span class="sr-only">(current)</span></a
           >           
           <div class="dropdown d-flex">
             <button class="nav-item nav-link bg-transparent border-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
@@ -89,16 +89,17 @@
             >
             <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="dropdownMenuButton"> 
               <% if(userName){ %>
-                <div class="user dropdown-item text-info">Hello, 
+                <div class="user text-info h5 px-4 pt-1 pb-2">Hello, 
                   <span class="font-weight-bold"><%= userName %></span>
                 </div> 
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/dashboard">Dashboard</a>
               <% } %> 
-              <a class="dropdown-item" href="/dashboard">Dashboard</a>
               <% if(!userName){ %>                  
-                <a class="dropdown-item" href="/auth/login">登入</a>
+                <a class="dropdown-item" href="/auth/login">Log in</a>
               <% } else {%> 
                 <form action="/dashboard/logout" method="post">
-                  <input class="dropdown-item" type="submit" value="登出">
+                  <input class="dropdown-item" type="submit" value="Log out">
                 </form> 
               <% } %>
             </div>            

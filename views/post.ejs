@@ -1,4 +1,4 @@
-<% extend('./layouts/layout')%>
+<% extend('./layouts/layout',{userName})%>
 
 <nav aria-label="breadcrumb" class="row">
   <ol class="breadcrumb bg-transparent">
@@ -76,5 +76,9 @@
 <style>
   a:not(.breadcrumb-item > a) {
     color: #369;
+  }
+
+  a.dropdown-item {
+    color: #000 !important;
   }
 </style>
