@@ -28,9 +28,14 @@
         font-size: 14px;
       }
 
-      .main {
-        min-height: calc(100vh - (49px + 49px + 42px + 18px));
+      body,
+      html {
+        height: 100%;
       }
+
+      /* .main {
+        min-height: calc(100vh - (49px + 49px + 42px + 18px));
+      } */
     </style>
     <!-- JavaScript -->
     <script
@@ -50,7 +55,7 @@
     ></script>
     <script src="https://cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
   </head>
-  <body>
+  <body class="d-flex flex-column">
     <nav class="navbar navbar-expand-md navbar-dark bg-info">
       <a class="navbar-brand" href="/dashboard">Dashboard</a>
       <button
@@ -67,7 +72,10 @@
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav align-items-center w-100">
           <a class="nav-item nav-link" href="/"> Home </a>
-          <a class="nav-item nav-link" href="/dashboard/archives"> Archives </a>
+          <a class="nav-item nav-link" href="/dashboard"> Archive </a>
+          <a class="nav-item nav-link" href="/dashboard/statistics">
+            Statistics
+          </a>
           <a class="nav-item nav-link" href="/dashboard/categories"
             >Categories
           </a>
@@ -89,7 +97,9 @@
         </div>
       </div>
     </nav>
-    <div class="container-fluid container-xl py-4"><%- content %></div>
+    <main class="container-fluid container-xl py-4 flex-grow-1">
+      <%- content %>
+    </main>
     <footer class="bg-secondary text-white py-4 footer">
       <div class="container">
         <div class="text-center">© Copright 2022 WEB TECH</div>

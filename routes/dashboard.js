@@ -10,34 +10,6 @@ const articlesRef = firebaseAdminDb.ref('/articles/')
 const usersRef = firebaseAdminDb.ref('/users/')
 
 router.get('/', (req, res) => {
-  const getUserName = async () => {
-    const uid = req.session.uid
-    console.log('uid', uid)
-
-    if (!uid) {
-      return (userName = 'no user')
-    }
-
-    const snapshot = await usersRef.child(uid).once('value')
-    userName = snapshot.val().userName
-  }
-
-  const renderData = async () => {
-    await getUserName()
-
-    if (userName === 'no user') {
-      return res.redirect('/auth/login')
-    }
-
-    res.render('dashboard/index', {
-      userName
-    })
-  }
-
-  renderData()
-})
-
-router.get('/archives', (req, res) => {
   const uid = req.session.uid
   const userArticlesRefs = articlesRef.child(uid)
   const articleStatus = req.query.status || 'public'
@@ -195,20 +167,21 @@ router.post('/article/delete/:id', (req, res) => {
 router.get('/categories', function (req, res) {
   categoriesRef.once('value', (snapshot) => {
     const categories = snapshot.val()
-    const alertMessages = req.flash('info')
-    console.log('alertMessages', alertMessages)
+    const alertMessages = req.flash('alert-message')
+    const successMessages = req.flash('success-message')
 
     res.render('dashboard/categories', {
       userName,
       categories,
-      alertMessages
+      alertMessages,
+      successMessages
     })
   })
 })
 
 router.post('/categories/create', async (req, res, next) => {
   if (req.body.name === '' || req.body.path === '') {
-    req.flash('info', '分類或路徑不得為空')
+    req.flash('alert-message', '分類或路徑不得為空')
     res.redirect('/dashboard/categories')
     return
   }
@@ -233,27 +206,27 @@ router.post('/categories/create', async (req, res, next) => {
 
   // 編輯：路徑或項目名其中一個要更改才可以更新 且 須為已存在的項目
   if (
-    (categoriesPath?.[id].path !== path ||
-      categoriesPath?.[id].name !== name) &&
+    (categoriesPath?.[id]?.path !== path ||
+      categoriesPath?.[id]?.name !== name) &&
     categories?.[id]
   ) {
     const updateData = { name, path, id }
     categoriesRef.child(id).update(updateData)
-    req.flash('info', '更新成功')
+    req.flash('success-message', '更新成功')
     res.redirect('/dashboard/categories')
     return
   }
 
   // 新增：不得輸入已存在的路徑或名稱
   if (categoriesPath !== null || categoriesName !== null) {
-    req.flash('info', '已有相同名稱或路徑')
+    req.flash('alert-message', '已有相同名稱或路徑')
     res.redirect('/dashboard/categories')
     return
   }
 
   const categoryRef = categoriesRef.push()
   categoryRef.set({ ...data, id: categoryRef.key })
-  req.flash('info', '新增成功')
+  req.flash('success-message', '新增成功')
   res.redirect('/dashboard/categories')
 })
 
@@ -261,8 +234,36 @@ router.post('/categories/delete/:id', (req, res) => {
   const id = req.params.id
   categoriesRef.child(id).remove()
 
-  req.flash('info', '欄位刪除成功')
+  req.flash('success-message', '欄位刪除成功')
   res.redirect('/dashboard/categories')
+})
+
+router.get('/statistics', (req, res) => {
+  const getUserName = async () => {
+    const uid = req.session.uid
+    console.log('uid', uid)
+
+    if (!uid) {
+      return (userName = 'no user')
+    }
+
+    const snapshot = await usersRef.child(uid).once('value')
+    userName = snapshot.val().userName
+  }
+
+  const renderData = async () => {
+    await getUserName()
+
+    if (userName === 'no user') {
+      return res.redirect('/auth/login')
+    }
+
+    res.render('dashboard/statistics', {
+      userName
+    })
+  }
+
+  renderData()
 })
 
 router.post('/logout', (req, res) => {
