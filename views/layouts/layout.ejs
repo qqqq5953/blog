@@ -93,11 +93,15 @@
                   <span class="font-weight-bold"><%= userName %></span>
                 </div> 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/dashboard">Dashboard</a>
+                <a class="dropdown-item" href="/dashboard">Archive</a>
+                <a class="dropdown-item" href="/dashboard/statistics">Statistics</a>
+                <a class="dropdown-item" href="/dashboard/categories">Categories</a>
+                <a class="dropdown-item" href="/dashboard/article/create">Create</a>
               <% } %> 
               <% if(!userName){ %>                  
                 <a class="dropdown-item" href="/auth/login">Log in</a>
               <% } else {%> 
+                <div class="dropdown-divider"></div>
                 <form action="/dashboard/logout" method="post">
                   <input class="dropdown-item" type="submit" value="Log out">
                 </form> 
